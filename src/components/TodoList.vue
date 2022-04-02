@@ -1,10 +1,12 @@
 <template>
   <section>
     <transition-group name="list" tag="ul">
-      <li v-for="(todoItem, index) in propsdata" :key="todoItem" class="shadow">
-        <i class="checkBtn fas fa-check" aria-hidden="true"></i>
-        {{ todoItem }}
-        <span class="removeBtn" type="button" @click="removeTodo(todoItem, index)">
+      <li v-for="(todo, index) in propsdata" v-bind:key="todo.item" class="shadow">
+        <i class="checkBtn fas fa-check" @click="toggleTodo(todo, index)" v-bind:class="{checkBtnCompleted: todo.completed}" aria-hidden="true"></i>
+        <span @click="toggleTodo(todo, index)" v-bind:class="{textCompleted: todo.completed}"> 
+          {{ todo.item }}
+        </span>
+        <span class="removeBtn" type="button" @click="removeTodo(todo, index)">
           <i class="far fa-trash-alt" aria-hidden="true"></i>
         </span>
       </li>
@@ -16,8 +18,11 @@
 export default {
   props: ['propsdata'],
   methods: {
-    removeTodo(todoItem, index) {
-      this.$emit('removeTodo', todoItem, index);
+    removeTodo(todo, index) {
+      this.$emit('removeTodo', todo, index);
+    },
+    toggleTodo(todo, index){
+      this.$emit('toggleTodo', todo, index);
     }
   }
 }
@@ -49,7 +54,12 @@ export default {
     margin-left: auto;
     color: #de4343;
   }
-
+  .checkBtnCompleted {
+    color:#9b9898
+  }
+  .textCompleted {
+    text-decoration: line-through;
+  }
   .list-enter-active, .list-leave-active {
     transition: all 1s;
   }
