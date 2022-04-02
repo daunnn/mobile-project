@@ -1,13 +1,22 @@
 <template>
-  <div class="inputBox shadow">
-    <input type="text" v-model="newTodoItem" placeholder="Type what you have to do" v-on:keyup.enter="addTodo">
-    <span class="addContainer" v-on:click="addTodo">
-      <i class="addBtn fas fa-plus" aria-hidden="true"></i>
-    </span>
+  <div class="inputBox shadow">  
+  <input type="text" v-model="newTodoItem" placeholder="Type what you have to do" v-on:click="DietExercise">
 
-    <modal v-if="showModal" @close="showModal = false">
-      <h3 slot="header">경고</h3>
-      <span slot="footer" @click="showModal = false">할 일을 입력하세요.
+    <modal v-if="popup">
+      <span slot="footer">식단, 운동 중 하나를 선택하세요.
+        <button @click="diet" type="button">식단</button>
+        <button @click="exer" type="button">운동</button>
+        <i class="closeModalBtn fas fa-times" aria-hidden="true"></i>
+      </span>
+    </modal>
+
+
+    <modal v-if="showDiet" @close="showDiet = false">
+      <span slot="footer">
+        <input type="text" v-model="newTodoItem" placeholder="type" v-on:keyup="addTodo">
+        <button @click="newTodoItem.item=='아침'">아침</button>
+        <button @click="newTodoItem.item=='점심'">점심</button>
+        <button @click="newTodoItem.item=='저녁'">저녁</button>
         <i class="closeModalBtn fas fa-times" aria-hidden="true"></i>
       </span>
     </modal>
@@ -21,7 +30,10 @@ export default {
   data() {
     return {
       newTodoItem: '',
-      showModal: false
+      popup: false,
+      showModal: false,
+      showDiet: false,
+      showExercise: false
     }
   },
   methods: {
@@ -36,7 +48,17 @@ export default {
     },
     clearInput() {
       this.newTodoItem = '';
+    },
+
+    DietExercise(){
+      this.popup=!this.popup;
+    },
+    diet(){
+      this.showDiet=!this.showDiet;
+      this.popup = !this.popup;
     }
+
+
   },
   components: {
     Modal: Modal
