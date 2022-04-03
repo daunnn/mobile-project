@@ -1,14 +1,13 @@
 <template>
-  <div class="inputBox shadow">  
-  <input type="text" v-model="newTodoItem" placeholder="Type what you have to do" v-on:click="DietExercise">
-
-    <modal v-if="popup">
+  <div class="inputBox shadow">
+  <button @click="DietExercise">Click to add list</button>
+<!--  <input type="text" v-model="newTodoItem" placeholder="Type what you have to do" v-on:click="DietExercise">
+-->    <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
         <h1></h1>  
         <button @click="diet" type="button">식단</button>
         <button @click="exer" type="button">운동</button>
  
-
        <button @click="popup = false">
         <i class="addBtn fas fa-times" aria-hidden="true"></i>
        </button>
@@ -19,11 +18,11 @@
 <!-- 식단 입력 부분 -->
     <modal v-if="showDiet" @close="showDiet = false">
       <span slot="footer">
-        <input type="text" v-model="newTodoItem" placeholder="type" v-on:keyup.enter="addTodo">
+        <input type="text" placeholder="type" v-on:change="setItem">
         <h1></h1> 
-        <button @click="newTodoItem.item=='아침'">아침</button>
-        <button @click="newTodoItem.item=='점심'">점심</button>
-        <button @click="newTodoItem.item=='저녁'">저녁</button>
+        <button @click="setCategory('아침')">아침</button>
+        <button @click="setCategory('점심')">점심</button>
+        <button @click="setCategory('저녁')">저녁</button>
 
         <button class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
@@ -38,11 +37,11 @@
 <!-- 운동 입력 부분 -->
       <modal v-if="showExercise" @close="showExercise = false">
       <span slot="footer">
-        <input type="text" v-model="newTodoItem" placeholder="type" v-on:keyup.enter="addTodo">
+        <input type="text" placeholder="type" v-on:change="setItem">
         <h1></h1> 
-        <button @click="newTodoItem.item=='유산소'">유산소</button>
-        <button @click="newTodoItem.item=='무산소'">무산소</button>
-        <button @click="newTodoItem.item=='스트레칭'">스트레칭</button>
+        <button @click="setCategory('유산소')">유산소</button>
+        <button @click="setCategory('무산소')">무산소</button>
+        <button @click="setCategory('스트레칭')">스트레칭</button>
 
         <button class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
@@ -72,6 +71,7 @@ export default {
   data() {
     return {
       newTodoItem: '',
+      category: '',
       popup: false,
       showModal: false,
       showDiet: false,
@@ -82,13 +82,20 @@ export default {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value)
+				this.$emit('addTodo', value, this.category);
         this.clearInput();
       } else {
         this.showModal = !this.showModal;
 
       }
     },
+    setItem(e){
+      return this.newTodoItem=e.target.value;
+    },
+    setCategory(cate){
+      return this.category=cate;
+    },
+
     clearInput() {
       this.newTodoItem = '';
     },
