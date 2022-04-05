@@ -23,6 +23,15 @@
         <button @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}" >아침</button>
         <button @click="[setCategory('점심'), clickCategory('점심')]" v-bind:class="{clickBtn: this.clicklaunch}">점심</button>
         <button @click="[setCategory('저녁'), clickCategory('저녁')]" v-bind:class="{clickBtn: this.clickeven}">저녁</button>
+
+        <h1></h1>
+        <button @click="setCategory1('탄수화물')">탄수화물</button>
+        <button @click="setCategory1('단백질')">단백질</button>
+        <button @click="setCategory1('지방')">지방</button>
+
+        <h1></h1>
+        <input type="text" placeholder="양(g, 개수)" v-on:change="setItem1">
+        <input type="text" placeholder="칼로리" v-on:change="setItem2">
         
       
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
@@ -72,7 +81,10 @@ export default {
   data() {
     return {
       newTodoItem: '',
+      newg:'',
+      newcal:'',
       category: '',
+      category1: '',
       popup: false,
 
       showModal: false,
@@ -98,7 +110,7 @@ export default {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.category);
+				this.$emit('addTodo', value, this.category, this.category1, this.newg, this.newcal);
         this.clearInput();
 
         //modal 창 삭제
@@ -112,9 +124,18 @@ export default {
     setItem(e){
       return this.newTodoItem=e.target.value;
     },
+    setItem1(e){
+      return this.newg=e.target.value;
+    },
+    setItem2(e){
+      return this.newcal=e.target.value;
+    },
     setCategory(cate){
       
       return this.category=cate;
+    },
+    setCategory1(cate1){
+      return this.category1=cate1;
     },
 
     //카테고리 선택 버튼 클릭 시 스타일 변화 위한 메소드
