@@ -24,8 +24,8 @@ export default {
       localStorage.clear();
       this.todoItems = [];
     },
-		addTodo(todoItem) {
-      var obj={completed: false, item: todoItem, category:0};
+		addTodo(todoItem, cate) {
+      var obj={completed: false, item: todoItem, category:cate};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
 			this.todoItems.push(obj);
 		},

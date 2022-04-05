@@ -6,6 +6,26 @@
         <span @click="toggleTodo(todo, index)" v-bind:class="{textCompleted: todo.completed}"> 
           {{ todo.item }}
         </span>
+
+        <!--수정-->
+        <span class="updateBtn" type="button" @click="edit(todo, index)">
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i> 
+        </span>
+        <modal v-if="showModify">
+          <span slot ="footer">
+            <div class="inputBox shadow">
+            <input type="text" placeholder="type modified contents" v-on:change="editTodo">
+            <button @click="showModify = false" >
+              <i class="addBtn fas fa-times" aria-hidden="true"></i>
+            </button>
+            </div>
+          </span>
+        </modal>
+
+
+
+
+        <!--삭제-->
         <span class="removeBtn" type="button" @click="removeTodo(todo, index)">
           <i class="far fa-trash-alt" aria-hidden="true"></i>
         </span>
@@ -15,7 +35,16 @@
 </template>
 
 <script>
+import Modal from './common/AlertModal.vue'
 export default {
+  data(){
+    return{
+      showModify: false,
+      modifyTodo: {},
+      modifyIndex: 0,
+      editItem: ''
+    }
+  },
   props: ['propsdata'],
   methods: {
     removeTodo(todo, index) {
@@ -23,7 +52,21 @@ export default {
     },
     toggleTodo(todo, index){
       this.$emit('toggleTodo', todo, index);
+    },
+    edit(todo, index){
+      this.showModify=!this.showModify;
+      this.modifyTodo=todo;
+      this.modifyIndex=index;      
+    },
+    editTodo(e){
+      this.editItem=e.target.value;
+      this.$emit('modifyTodo', this.modifyTodo, this.modifyIndex, this.editItem);
+      this.showModify=!this.showModify
     }
+
+  },
+  components: {
+    Modal: Modal
   }
 }
 </script>
