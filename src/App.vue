@@ -25,8 +25,8 @@ export default {
       localStorage.clear();
       this.todoItems = [];
     },
-		addTodo(todoItem, cate) {
-      var obj={completed: false, item: todoItem, category:cate};
+		addTodo(todoItem, cate, attri, amount, calorie) {
+      var obj={completed: false, item: todoItem, category:cate, attribute: attri, amount: amount, calorie: calorie};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
 			this.todoItems.push(obj);
 		},

@@ -7,7 +7,7 @@
         <button @click="diet" type="button">식단</button>
         <button @click="exer" type="button">운동</button>
  
-       <button @click="popup = false">
+       <button @click="popup = false" class="removeContainer">
         <i class="addBtn fas fa-times" aria-hidden="true"></i>
        </button>
 
@@ -20,25 +20,27 @@
         
         <input type="text" placeholder="type" v-on:change="setItem">
         <h1></h1> 
-        <button @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}" >아침</button>
+        <button @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}">아침</button>
         <button @click="[setCategory('점심'), clickCategory('점심')]" v-bind:class="{clickBtn: this.clicklaunch}">점심</button>
         <button @click="[setCategory('저녁'), clickCategory('저녁')]" v-bind:class="{clickBtn: this.clickeven}">저녁</button>
 
-        <h1></h1>
-        <button @click="setCategory1('탄수화물')">탄수화물</button>
-        <button @click="setCategory1('단백질')">단백질</button>
-        <button @click="setCategory1('지방')">지방</button>
-
-        <h1></h1>
-        <input type="text" placeholder="양(g, 개수)" v-on:change="setItem1">
-        <input type="text" placeholder="칼로리" v-on:change="setItem2">
         
-      
+        <h2></h2>
+        
+        <button @click="[setAttribute('탄수화물'), clickAttribute('탄수화물')]"  v-bind:class="{clickBtn: this.clickcarbo}" >탄수화물</button>
+        <button @click="[setAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: this.clickprotein}">단백질</button>
+        <button @click="[setAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: this.clickfat}">지방</button>
+        
+        
+        <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="shadow">
+        <input type="text" placeholder="칼로리" v-on:change="setCalorie">
+        
+        <h5></h5>
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
 
-        <button @click="showDiet = false">
+        <button @click="showDiet = false" class="removeContainer">
           <i class="addBtn fas fa-times" aria-hidden="true"></i>
           </button>
       </span>
@@ -57,7 +59,7 @@
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
 
-        <button @click="showExercise = false" >
+        <button @click="showExercise = false" class="removeContainer">
           <i class="addBtn fas fa-times" aria-hidden="true"></i>
           </button>
       </span>
@@ -81,10 +83,10 @@ export default {
   data() {
     return {
       newTodoItem: '',
-      newg:'',
-      newcal:'',
+      newAmount:'',
+      newCalorie:'',
       category: '',
-      category1: '',
+      attribute: '',
       popup: false,
 
       showModal: false,
@@ -100,17 +102,22 @@ export default {
       clickstrech: false,
 
       //카테고리 선택 여부
-      categorySelect: false
+      categorySelect: false,
+
+      //attribute 버튼 클릭 여부
+      clickcarbo: false,
+      clickprotein: false,
+      clickfat: false,
+
     
     }
   },
 
   methods: {
-
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.category, this.category1, this.newg, this.newcal);
+				this.$emit('addTodo', value, this.category, this.attribute, this.newAmount, this.newCalorie);
         this.clearInput();
 
         //modal 창 삭제
@@ -124,18 +131,18 @@ export default {
     setItem(e){
       return this.newTodoItem=e.target.value;
     },
-    setItem1(e){
-      return this.newg=e.target.value;
+    setAmount(e){
+      return this.newAmount=e.target.value;
     },
-    setItem2(e){
-      return this.newcal=e.target.value;
+    setCalorie(e){
+      return this.newCalorie=e.target.value;
     },
     setCategory(cate){
       
       return this.category=cate;
     },
-    setCategory1(cate1){
-      return this.category1=cate1;
+    setAttribute(attr){
+      return this.attribute=attr;
     },
 
     //카테고리 선택 버튼 클릭 시 스타일 변화 위한 메소드
@@ -147,6 +154,12 @@ export default {
       if (str=='유산소') this.clickaero =! this.clickaero;
       if (str=='무산소') this.clickana =! this.clickana;
       if (str=='스트레칭') this.clickstrech =! this.clickstrech;
+    },
+
+    clickAttribute(str){
+      if (str=='탄수화물') this.clickcarbo = ! this.clickcarbo;
+      if (str=='단백질') this.clickprotein =! this.clickprotein;
+      if (str=='지방') this.clickfat =! this.clickfat;
     },
 
     clearInput() {
@@ -163,6 +176,11 @@ export default {
       this.clickana=false;
       this.clickstrech=false;
       this.categorySelect=false;
+
+      this.clickcarbo = false;
+      this.clickprotein = false;
+      this.clickfat =false;
+
       
     },
 
@@ -199,11 +217,14 @@ input:focus {
   font-size: 0.9rem;
 }
 .addContainer {
-  float: right;
+  
   background: linear-gradient(to right, #6478FB, #8763FB);
   display: inline-block;
   width: 3rem;
-  border-radius: 0 5px 5px 0;
+  
+}
+.removeContainer{
+  background: rgb(64, 64, 64)
 }
 .addBtn {
   color: white;
@@ -211,6 +232,6 @@ input:focus {
 }
 .clickBtn{
   background-color:rgb(116, 115, 115);
-
 }
+
 </style>
