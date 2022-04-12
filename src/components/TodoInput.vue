@@ -1,18 +1,33 @@
 <template>
-  <div class="inputBox shadow">
+  <div>
   <button @click="DietExercise">Click to add list</button>
+  <h1></h1> 
+  <h1></h1> 
+  <h1></h1> 
+
+  <!-- 카테고리 필터링 부분 수정중 !!
+  <form class="s-form">
+    <select v-model="option" @change="changeOption">
+      <option value="All">All</option>
+      <option value="식단">식단</option>
+      <option value="운동">운동</option>
+    </select> {{option}}
+  </form> -->
+
+
+
     <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
         <h1></h1>  
-        <button @click="diet" type="button">식단</button>
-        <button @click="exer" type="button">운동</button>
+        <button @click="[diet(), setDiet_Exer('식단')]" type="button">식단</button>
+        <button @click="[exer(), setDiet_Exer('운동')]" type="button">운동</button>
  
        <button @click="popup = false" class="removeContainer">
         <i class="addBtn fas fa-times" aria-hidden="true"></i>
        </button>
-
       </span>
     </modal>
+  
 
 <!-- 식단 입력 부분 -->
     <modal v-if="showDiet" @close="showDiet = false">
@@ -82,9 +97,13 @@ import Modal from './common/AlertModal.vue'
 export default {
   data() {
     return {
+
+      //option:'',
+
       newTodoItem: '',
       newAmount:'',
       newCalorie:'',
+      diet_exer:'',
       category: '',
       attribute: '',
       popup: false,
@@ -109,6 +128,10 @@ export default {
       clickprotein: false,
       clickfat: false,
 
+      // 처음 필터값은 false(식단, 운동) -> 필터 클릭하면 해당 카테고리만 true로 바뀜
+      diet_tf:false,
+      exer_tf:false,
+      all_tf:false
     
     }
   },
@@ -117,7 +140,8 @@ export default {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.category, this.attribute, this.newAmount, this.newCalorie);
+				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie,
+                    this.diet_tf, this.diet_tf, this.all_tf);
         this.clearInput();
 
         //modal 창 삭제
@@ -137,12 +161,14 @@ export default {
     setCalorie(e){
       return this.newCalorie=e.target.value;
     },
-    setCategory(cate){
-      
+    setCategory(cate){      
       return this.category=cate;
     },
     setAttribute(attr){
       return this.attribute=attr;
+    },
+    setDiet_Exer(de){
+      return this.diet_exer=de;
     },
 
     //카테고리 선택 버튼 클릭 시 스타일 변화 위한 메소드
@@ -179,21 +205,28 @@ export default {
 
       this.clickcarbo = false;
       this.clickprotein = false;
-      this.clickfat =false;
-
-      
+      this.clickfat =false;     
     },
 
     diet(){
       this.showDiet=!this.showDiet;
-      this.popup = !this.popup;
-      
+      this.popup = !this.popup;      
     },
     exer(){
       this.showExercise=!this.showExercise;
-      this.popup = !this.popup;
-      
+      this.popup = !this.popup;      
     }
+    /*changeOption(){
+      if (this.option=='식단'){
+        if (this.diet_exer=='식단') this.diet_tf = !this.diet_tf;
+      }
+      else if (this.option=='운동'){
+        if (this.diet_exer=='운동') this.exer_tf = !this.exer_tf;
+      }
+      else{
+        this.all_tf = !this.all_tf;
+      }
+    }*/
   },
   components: {
     Modal: Modal

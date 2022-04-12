@@ -22,9 +22,6 @@
           </span>
         </modal>
 
-
-
-
         <!--삭제-->
         <span class="removeBtn" type="button" @click="removeTodo(todo, index)">
           <i class="far fa-trash-alt" aria-hidden="true"></i>
@@ -39,10 +36,12 @@ import Modal from './common/AlertModal.vue'
 export default {
   data(){
     return{
+
       showModify: false,
       modifyTodo: {},
       modifyIndex: 0,
       editItem: ''
+
     }
   },
   props: ['propsdata'],

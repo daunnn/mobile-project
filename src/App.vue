@@ -5,6 +5,8 @@
     <TodoList v-bind:propsdata="todoItems" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
     @modifyTodo="modifyTodo"></TodoList>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
+    <TodoFilter v-bind:propsdata="todoItems" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
+    @modifyTodo="modifyTodo" @filterTodo="filterTodo"></TodoFilter>
   </div>
 </template>
 
@@ -13,11 +15,13 @@ import TodoHeader from './components/TodoHeader.vue'
 import TodoInput from './components/TodoInput.vue'
 import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
+import TodoFilter from './components/TodoFilter.vue'
 
 export default {
   data() {
     return {
-      todoItems: [] //todos
+      todoItems: [], //todos
+      todoItems_filter:[]
     }
   },
   methods: {
@@ -25,8 +29,9 @@ export default {
       localStorage.clear();
       this.todoItems = [];
     },
-		addTodo(todoItem, cate, attri, amount, calorie) {
-      var obj={completed: false, item: todoItem, category:cate, attribute: attri, amount: amount, calorie: calorie};
+		addTodo(todoItem, diet_exer, cate, attri, amount, calorie, d_tf, e_tf, a_tf) {
+      var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
+               calorie: calorie, diet_tf:d_tf, exer_tf:e_tf, all_tf:a_tf};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
 			this.todoItems.push(obj);
 		},
@@ -43,6 +48,10 @@ export default {
       localStorage.removeItem(todo.item);
       this.todoItems[index].item = newitem;
       localStorage.setItem(newitem, JSON.stringify(todo));
+    },
+    filterTodo(todo_filter){
+      this.todoItems_filter.push(JSON.stringify(todo_filter));
+      alert(this.todoItems_filter);      
     }
   },
   created() {
@@ -57,7 +66,8 @@ export default {
     'TodoHeader': TodoHeader,
     'TodoInput': TodoInput,
     'TodoList': TodoList,
-    'TodoFooter': TodoFooter
+    'TodoFooter': TodoFooter,
+    'TodoFilter': TodoFilter
   }
 }
 </script>
