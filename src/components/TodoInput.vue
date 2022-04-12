@@ -1,18 +1,35 @@
 <template>
-  <div class="inputBox shadow">
+  <div>
   <button @click="DietExercise">Click to add list</button>
+  <h1></h1> 
+  <h1></h1> 
+  <h1></h1> 
+
+  <!-- 카테고리 필터링 부분 수정중 !!
+  <form class="s-form">
+    <select v-model="option" @change="changeOption">
+      <option value="All">All</option>
+      <option value="식단">식단</option>
+      <option value="운동">운동</option>
+    </select> {{option}}
+  </form> -->
+ 
+
+
+
+
     <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
         <h1></h1>  
-        <button @click="diet" type="button">식단</button>
-        <button @click="exer" type="button">운동</button>
+        <button @click="[diet(), setDiet_Exer('식단')]" type="button">식단</button>
+        <button @click="[exer(), setDiet_Exer('운동')]" type="button">운동</button>
  
-       <button @click="popup = false">
+       <button @click="popup = false" class="removeContainer">
         <i class="addBtn fas fa-times" aria-hidden="true"></i>
        </button>
-
       </span>
     </modal>
+  
 
 <!-- 식단 입력 부분 -->
     <modal v-if="showDiet" @close="showDiet = false">
@@ -20,16 +37,27 @@
         
         <input type="text" placeholder="type" v-on:change="setItem">
         <h1></h1> 
-        <button @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}" >아침</button>
+        <button @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}">아침</button>
         <button @click="[setCategory('점심'), clickCategory('점심')]" v-bind:class="{clickBtn: this.clicklaunch}">점심</button>
         <button @click="[setCategory('저녁'), clickCategory('저녁')]" v-bind:class="{clickBtn: this.clickeven}">저녁</button>
+
         
-      
+        <h2></h2>
+        
+        <button @click="[setAttribute('탄수화물'), clickAttribute('탄수화물')]"  v-bind:class="{clickBtn: this.clickcarbo}" >탄수화물</button>
+        <button @click="[setAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: this.clickprotein}">단백질</button>
+        <button @click="[setAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: this.clickfat}">지방</button>
+        
+        
+        <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="shadow">
+        <input type="text" placeholder="칼로리" v-on:change="setCalorie">
+        
+        <h5></h5>
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
 
-        <button @click="showDiet = false">
+        <button @click="showDiet = false" class="removeContainer">
           <i class="addBtn fas fa-times" aria-hidden="true"></i>
           </button>
       </span>
@@ -48,7 +76,7 @@
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
 
-        <button @click="showExercise = false" >
+        <button @click="showExercise = false" class="removeContainer">
           <i class="addBtn fas fa-times" aria-hidden="true"></i>
           </button>
       </span>
@@ -71,8 +99,15 @@ import Modal from './common/AlertModal.vue'
 export default {
   data() {
     return {
+
+      //option:'',
+
       newTodoItem: '',
+      newAmount:'',
+      newCalorie:'',
+      diet_exer:'',
       category: '',
+      attribute: '',
       popup: false,
 
       showModal: false,
@@ -88,17 +123,30 @@ export default {
       clickstrech: false,
 
       //카테고리 선택 여부
-      categorySelect: false
+      categorySelect: false,
+
+      //attribute 버튼 클릭 여부
+      clickcarbo: false,
+      clickprotein: false,
+      clickfat: false,
+
+      // 처음 필터값은 false(식단, 운동) -> 필터 클릭하면 해당 카테고리만 true로 바뀜
+      diet_tf:false,
+      exer_tf:false,
+      all_tf:false,
+
+      
+
     
     }
   },
 
   methods: {
-
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.category);
+				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie,
+                    this.diet_tf, this.diet_tf, this.all_tf);
         this.clearInput();
 
         //modal 창 삭제
@@ -112,10 +160,22 @@ export default {
     setItem(e){
       return this.newTodoItem=e.target.value;
     },
-    setCategory(cate){
-      
+    setAmount(e){
+      return this.newAmount=e.target.value;
+    },
+    setCalorie(e){
+      return this.newCalorie=e.target.value;
+    },
+    setCategory(cate){      
       return this.category=cate;
     },
+    setAttribute(attr){
+      return this.attribute=attr;
+    },
+    setDiet_Exer(de){
+      return this.diet_exer=de;
+    },
+
 
     //카테고리 선택 버튼 클릭 시 스타일 변화 위한 메소드
     clickCategory(str){
@@ -126,6 +186,12 @@ export default {
       if (str=='유산소') this.clickaero =! this.clickaero;
       if (str=='무산소') this.clickana =! this.clickana;
       if (str=='스트레칭') this.clickstrech =! this.clickstrech;
+    },
+
+    clickAttribute(str){
+      if (str=='탄수화물') this.clickcarbo = ! this.clickcarbo;
+      if (str=='단백질') this.clickprotein =! this.clickprotein;
+      if (str=='지방') this.clickfat =! this.clickfat;
     },
 
     clearInput() {
@@ -142,19 +208,32 @@ export default {
       this.clickana=false;
       this.clickstrech=false;
       this.categorySelect=false;
-      
+
+      this.clickcarbo = false;
+      this.clickprotein = false;
+      this.clickfat =false;     
     },
 
     diet(){
       this.showDiet=!this.showDiet;
-      this.popup = !this.popup;
-      
+      this.popup = !this.popup;      
     },
     exer(){
       this.showExercise=!this.showExercise;
-      this.popup = !this.popup;
-      
-    }
+      this.popup = !this.popup;      
+    },
+
+    /*changeOption(){
+      if (this.option=='식단'){
+        if (this.diet_exer=='식단') this.diet_tf = !this.diet_tf;
+      }
+      else if (this.option=='운동'){
+        if (this.diet_exer=='운동') this.exer_tf = !this.exer_tf;
+      }
+      else{
+        this.all_tf = !this.all_tf;
+      }
+    }*/
   },
   components: {
     Modal: Modal
@@ -178,11 +257,14 @@ input:focus {
   font-size: 0.9rem;
 }
 .addContainer {
-  float: right;
+  
   background: linear-gradient(to right, #6478FB, #8763FB);
   display: inline-block;
   width: 3rem;
-  border-radius: 0 5px 5px 0;
+  
+}
+.removeContainer{
+  background: rgb(64, 64, 64)
 }
 .addBtn {
   color: white;
@@ -190,6 +272,6 @@ input:focus {
 }
 .clickBtn{
   background-color:rgb(116, 115, 115);
-
 }
+
 </style>
