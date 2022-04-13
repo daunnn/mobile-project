@@ -3,20 +3,7 @@
   <button @click="DietExercise">Click to add list</button>
   <h1></h1> 
   <h1></h1> 
-  <h1></h1> 
-
-  <!-- 카테고리 필터링 부분 수정중 !!
-  <form class="s-form">
-    <select v-model="option" @change="changeOption">
-      <option value="All">All</option>
-      <option value="식단">식단</option>
-      <option value="운동">운동</option>
-    </select> {{option}}
-  </form> -->
- 
-
-
-
+  <h1></h1>  
 
     <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
@@ -100,8 +87,6 @@ export default {
   data() {
     return {
 
-      //option:'',
-
       newTodoItem: '',
       newAmount:'',
       newCalorie:'',
@@ -128,16 +113,9 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false,
+      clickfat: false
 
-      // 처음 필터값은 false(식단, 운동) -> 필터 클릭하면 해당 카테고리만 true로 바뀜
-      diet_tf:false,
-      exer_tf:false,
-      all_tf:false,
-
-      
-
-    
+   
     }
   },
 
@@ -145,8 +123,7 @@ export default {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie,
-                    this.diet_tf, this.diet_tf, this.all_tf);
+				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
         this.clearInput();
 
         //modal 창 삭제
@@ -221,19 +198,7 @@ export default {
     exer(){
       this.showExercise=!this.showExercise;
       this.popup = !this.popup;      
-    },
-
-    /*changeOption(){
-      if (this.option=='식단'){
-        if (this.diet_exer=='식단') this.diet_tf = !this.diet_tf;
-      }
-      else if (this.option=='운동'){
-        if (this.diet_exer=='운동') this.exer_tf = !this.exer_tf;
-      }
-      else{
-        this.all_tf = !this.all_tf;
-      }
-    }*/
+    }
   },
   components: {
     Modal: Modal

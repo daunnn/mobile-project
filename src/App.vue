@@ -3,13 +3,21 @@
     
     <TodoHeader></TodoHeader>
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
-    <TodoList v-bind:propsdata="search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
+    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
     @modifyTodo="modifyTodo"></TodoList>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
-    <TodoFilter v-bind:propsdata="todoItems" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-    @modifyTodo="modifyTodo" @filterTodo="filterTodo"></TodoFilter>
 
-   <input class="stage-search" type="text" v-model="search" @keyup.enter="searchitem" placeholder="검색"  />
+  <!-- 카테고리 필터링 부분 수정중 !!!-->
+  <form class="s-form">
+    <select v-model="option" @change="filter_search">
+      <option value="undefined">-선택-</option>
+      <option value="All">All</option>
+      <option value="식단">식단</option>
+      <option value="운동">운동</option>
+    </select> <!-- {{option}}-->
+  </form>
+
+   <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
 
 
   </div>
@@ -20,15 +28,17 @@ import TodoHeader from './components/TodoHeader.vue'
 import TodoInput from './components/TodoInput.vue'
 import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
-import TodoFilter from './components/TodoFilter.vue'
 
 export default {
   data() {
     return {
       todoItems: [], //todos
-      todoItems_filter:[],
+
+      option:'',
+
+      filter_search_push:[],
+
       search : '',
-      search_push : []
 
     }
   },
@@ -37,17 +47,17 @@ export default {
       localStorage.clear();
       this.todoItems = [];
     },
-		addTodo(todoItem, diet_exer, cate, attri, amount, calorie, d_tf, e_tf, a_tf) {
+		addTodo(todoItem, diet_exer, cate, attri, amount, calorie) {
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
-               calorie: calorie, diet_tf:d_tf, exer_tf:e_tf, all_tf:a_tf};
+               calorie: calorie};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
 			this.todoItems.push(obj);
-      this.search_push=this.todoItems
+      this.filter_search_push=this.todoItems;
 		},
     removeTodo(todo, index) {
       localStorage.removeItem(todo.item);
       this.todoItems.splice(index, 1);
-      this.search_push=this.todoItems
+      this.filter_search_push=this.todoItems;
     },
     toggleTodo(todo, index){
       this.todoItems[index].completed = !this.todoItems[index].completed;
@@ -59,24 +69,41 @@ export default {
       this.todoItems[index].item = newitem;
       localStorage.setItem(newitem, JSON.stringify(todo));
     },
-    filterTodo(todo_filter){
-      this.todoItems_filter.push(JSON.stringify(todo_filter));
-      alert(this.todoItems_filter);      
-    },
+    filter_search(){
+      var filter_search_data = [];
+      this.filter_search_push=[];
 
-
-    searchitem(){
-      var searcheddata = [];
-      console.log(this.todoItems)
-      for (var i = 0; i < this.todoItems.length; i++){
-        console.log(this.todoItems[i].item)
-        if (this.todoItems[i].item.includes(this.search)) {
-          searcheddata.push(this.todoItems[i])
+      // 검색 기능
+      for (var m = 0; m < this.todoItems.length; m++){
+        if (this.todoItems[m].item.includes(this.search)) {
+          filter_search_data.push(this.todoItems[m]);
         } 
 
-      }this.search_push=searcheddata
-      console.log(this.search_push)
-      
+      }this.filter_search_push=filter_search_data;
+
+      // 필터 기능
+      if (this.option=='식단'){
+        filter_search_data = [];
+        for (var i=0; i<this.todoItems.length; i++){
+          if (this.todoItems[i].diet_exer.includes('식단')){
+            filter_search_data.push(this.todoItems[i]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='운동'){
+        filter_search_data = [];
+        for (var j=0; j<this.todoItems.length; j++){
+          if (this.todoItems[j].diet_exer.includes('운동')){
+            filter_search_data.push(this.todoItems[j]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='All'){ 
+        filter_search_data = [];
+        for (var k=0; k<this.todoItems.length; k++){
+          filter_search_data.push(this.todoItems[k]);
+        }
+      }this.filter_search_push=filter_search_data;
 
     }
   },
@@ -86,7 +113,7 @@ export default {
 			for (var i = 0; i < localStorage.length; i++) {
         var temp =JSON.parse(localStorage.getItem(localStorage.key(i)))
         this.todoItems.push(temp);
-        this.search_push.push(temp);
+        this.filter_search_push.push(temp);
 			}
 		}
     console.log(this.todoItems)
@@ -95,8 +122,7 @@ export default {
     'TodoHeader': TodoHeader,
     'TodoInput': TodoInput,
     'TodoList': TodoList,
-    'TodoFooter': TodoFooter,
-    'TodoFilter': TodoFilter
+    'TodoFooter': TodoFooter
   }
 }
 </script>
