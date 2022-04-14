@@ -1,7 +1,7 @@
 <template>
   <section>
     <transition-group name="list" tag="ul">
-      <!-- search_tf 가 true일 때 (검색기능)-->
+      
       <li v-for="(todo, index) in propsdata" v-bind:key="todo.item" class="shadow">
         <i class="checkBtn fas fa-check" @click="toggleTodo(todo, index)" v-bind:class="{checkBtnCompleted: todo.completed}" aria-hidden="true"></i>
         <span @click="toggleTodo(todo, index)" v-bind:class="{textCompleted: todo.completed}"> 

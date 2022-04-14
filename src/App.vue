@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    
     <TodoHeader></TodoHeader>
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
@@ -18,9 +17,13 @@
   </form>
 
    <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
-
-
+   <button @click="TodoCompletePer()" :value="todo_per2" type="button" >진행상황 퍼센트</button>{{todo_per}}
+   
+   <bar-chart :value="todo_per2" :data="chartData" width="300" height="300"></bar-chart>
+   <!--@change="chagne_per"-->
+   
   </div>
+
 </template>
 
 <script>
@@ -32,13 +35,20 @@ import TodoFooter from './components/TodoFooter.vue'
 export default {
   data() {
     return {
+
       todoItems: [], //todos
 
       option:'',
-
       filter_search_push:[],
-
       search : '',
+
+      todo_per : 0,
+      todo_per2 : 0,
+      todo_per3 : 0,
+ 
+      chartData:{
+        '진행상황 퍼센트': parseFloat(this.todo_per2)
+      }
 
     }
   },
@@ -104,8 +114,24 @@ export default {
           filter_search_data.push(this.todoItems[k]);
         }
       }this.filter_search_push=filter_search_data;
+    },
+    TodoCompletePer(){
+      this.todo_per = 0;
+      var count = 0;
+      for (var i=0; i<this.todoItems.length; i++){
+          if (this.todoItems[i].completed == true){
+            count = count + 1;
+          }
+    } this.todo_per = count / this.todoItems.length;
+      this.todo_per = this.todo_per.toFixed(3);
+      this.todo_per2 = this.todo_per
+    }/*,
+    change_per(){
+      this.todo_per3 = this.value;
+      alert(this.todo_per2)
+      alert(this.todo_per3)
+    }**/
 
-    }
   },
   created() {
     
@@ -116,7 +142,7 @@ export default {
         this.filter_search_push.push(temp);
 			}
 		}
-    console.log(this.todoItems)
+    /*console.log(this.todoItems)*/
   },
   components: {
     'TodoHeader': TodoHeader,
@@ -125,6 +151,7 @@ export default {
     'TodoFooter': TodoFooter
   }
 }
+
 </script>
 
 <style>
