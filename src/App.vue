@@ -3,10 +3,10 @@
     <TodoHeader></TodoHeader>
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-    @modifyTodo="modifyTodo"></TodoList>
+    @modifyTodo="modifyTodo"></TodoList>{{todo_per2}} {{calorie}} {{total_cal}}
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 
-  <!-- 카테고리 필터링 부분 수정중 !!!-->
+  <!-- 카테고리 필터링 -->
   <button @click="clickDiet">식단</button>
   <button @click="clickExer">운동</button>
   
@@ -36,11 +36,10 @@
   </form>
 
    <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
-   <button @click="TodoCompletePer()" type="button" >진행상황 퍼센트</button>{{todo_per}}
    
    <!-- vue-chartkick 이용-->
-   <bar-chart :data="chartData" width="300" height="300" min="0" max="1"></bar-chart>
-   <button @click="updateChart()">차트 업데이트</button>
+   <bar-chart :data="chartData"  width="300" height="300" min="0" max="1"></bar-chart> <!--:data="chart"-->
+   <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
 
    
   </div>
@@ -55,8 +54,10 @@ import TodoFooter from './components/TodoFooter.vue'
 
 export default {
   name: 'app',
+  
   data() {
     return {
+
 
       todoItems: [], //todos
 
@@ -70,8 +71,14 @@ export default {
       click_diet : false,
       click_exer : false,
 
+      calorie:0,
+      total_cal:0,
+
       chartData:{
-        'percentage': 0
+        'percentage': 1
+      },
+      chartData1:{
+        'calorie': 1
       }
     }
   },
@@ -93,9 +100,45 @@ export default {
       this.filter_search_push=this.todoItems;
     },
     toggleTodo(todo, index){
+      // 완료 기능
       this.todoItems[index].completed = !this.todoItems[index].completed;
       localStorage.removeItem(todo.item);
       localStorage.setItem(todo.item, JSON.stringify(todo));
+
+      // 진행상황 퍼센트 및 칼로리 업데이트
+      this.todo_per = 0;
+      var count = 0;
+      this.calorie = 0;
+      this.total_cal = 0;
+
+      for (var i=0; i<this.todoItems.length; i++){
+          if (this.todoItems[i].completed == true){
+            count = count + 1;
+          }
+          if (this.todoItems[i].diet_exer.includes('식단')){
+            this.total_cal = this.total_cal + parseInt(this.todoItems[i].calorie);
+            if (this.todoItems[i].completed == true){
+              this.calorie = this.calorie + parseInt(this.todoItems[i].calorie);
+            }
+          }
+    } this.todo_per = count / this.todoItems.length;
+      this.todo_per = this.todo_per.toFixed(3);
+      this.todo_per2 = this.todo_per;
+
+      // 차트 업데이트
+      this.chartData = {
+        'percentage': parseFloat(this.todo_per2)
+      }
+      this.chartData1 = {
+        'calorie': parseInt(this.calorie)
+      }
+
+      // 로컬 스토리지 저장
+      localStorage.setItem('todo 퍼센트', parseFloat(this.todo_per2) );
+      localStorage.setItem('calorie', parseInt(this.calorie) );
+      localStorage.setItem('total_calorie', parseInt(this.total_cal) );
+
+
     },
     modifyTodo(todo, index, newitem){
       localStorage.removeItem(todo.item);
@@ -194,22 +237,6 @@ export default {
         }
       }this.filter_search_push=filter_search_data;
     },
-    TodoCompletePer(){
-      this.todo_per = 0;
-      var count = 0;
-      for (var i=0; i<this.todoItems.length; i++){
-          if (this.todoItems[i].completed == true){
-            count = count + 1;
-          }
-    } this.todo_per = count / this.todoItems.length;
-      this.todo_per = this.todo_per.toFixed(3);
-      this.todo_per2 = this.todo_per;
-    },
-    updateChart(){
-      this.chartData = {
-        'percentage': parseFloat(this.todo_per2)
-      }
-    },
     clickDiet(){
       this.click_diet = !this.click_diet;
     },
@@ -221,12 +248,29 @@ export default {
   created() {
     
 		if (localStorage.length > 0) {
-			for (var i = 0; i < localStorage.length; i++) {
-        var temp =JSON.parse(localStorage.getItem(localStorage.key(i)))
-        this.todoItems.push(temp);
-        this.filter_search_push.push(temp);
-			}
-		}
+      for (var i = 0; i < localStorage.length; i++) {
+        if(localStorage.key(i)=='todo 퍼센트'){
+          this.todo_per2 = JSON.parse(localStorage.getItem(localStorage.key(i)));
+          console.log(typeof this.todo_per2);
+          console.log(this.todo_per2);
+        }else if(localStorage.key(i)=='calorie') {
+          this.calorie = JSON.parse(localStorage.getItem(localStorage.key(i)));
+        }else if(localStorage.key(i)=='total_calorie') {
+          this.total_cal = JSON.parse(localStorage.getItem(localStorage.key(i)));
+        }else{
+            var temp =JSON.parse(localStorage.getItem(localStorage.key(i)));
+            this.todoItems.push(temp);
+            this.filter_search_push.push(temp);
+        }
+      }
+    }
+    // 자동으로 차트 업데이트
+    this.chartData = {
+        'percentage': parseFloat(this.todo_per2)
+      }
+    this.chartData1 = {
+        'calorie': parseInt(this.calorie)
+      }
     /*console.log(this.todoItems)*/
   },
   components: {
