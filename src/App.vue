@@ -17,10 +17,12 @@
   </form>
 
    <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
-   <button @click="TodoCompletePer()" :value="todo_per2" type="button" >진행상황 퍼센트</button>{{todo_per}}
+   <button @click="TodoCompletePer()" type="button" >진행상황 퍼센트</button>{{todo_per}}
    
-   <bar-chart :value="todo_per2" :data="chartData" width="300" height="300"></bar-chart>
-   <!--@change="chagne_per"-->
+   <!-- vue-chartkick 이용-->
+   <bar-chart :data="chartData" width="300" height="300" min="0" max="1"></bar-chart>
+   <button @click="updateChart()">차트 업데이트</button>
+
    
   </div>
 
@@ -33,6 +35,7 @@ import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
 
 export default {
+  name: 'app',
   data() {
     return {
 
@@ -44,12 +47,10 @@ export default {
 
       todo_per : 0,
       todo_per2 : 0,
-      todo_per3 : 0,
- 
-      chartData:{
-        '진행상황 퍼센트': parseFloat(this.todo_per2)
-      }
 
+      chartData:{
+        'percentage': 0
+      }
     }
   },
   methods: {
@@ -124,13 +125,13 @@ export default {
           }
     } this.todo_per = count / this.todoItems.length;
       this.todo_per = this.todo_per.toFixed(3);
-      this.todo_per2 = this.todo_per
-    }/*,
-    change_per(){
-      this.todo_per3 = this.value;
-      alert(this.todo_per2)
-      alert(this.todo_per3)
-    }**/
+      this.todo_per2 = this.todo_per;
+    },
+    updateChart(){
+      this.chartData = {
+        'percentage': parseFloat(this.todo_per2)
+      }
+    }
 
   },
   created() {

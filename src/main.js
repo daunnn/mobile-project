@@ -1,12 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
-import Chart from 'chart.js'
 import Chartkick from 'vue-chartkick'
+import Chart from 'chart.js'
+//import 'chart.js'
+//import 'hchs-vue-charts'
+//import 'vue-chartjs'
+
+//Vue.use(window.VueCharts)
 
 Vue.use(Chartkick.use(Chart))
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false 
 
 new Vue({
   render: h => h(App),
