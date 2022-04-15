@@ -7,12 +7,31 @@
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 
   <!-- 카테고리 필터링 부분 수정중 !!!-->
-  <form class="s-form">
+  <button @click="clickDiet">식단</button>
+  <button @click="clickExer">운동</button>
+  
+  <!--식단버튼을 누르면 (true)-->
+  <form class="s-form" v-if="click_diet">
     <select v-model="option" @change="filter_search">
       <option value="undefined">-선택-</option>
       <option value="All">All</option>
-      <option value="식단">식단</option>
-      <option value="운동">운동</option>
+      <option value="아침">아침</option>
+      <option value="점심">점심</option>
+      <option value="저녁">저녁</option>
+      <option value="탄수화물">탄수화물</option>
+      <option value="단백질">단백질</option>
+      <option value="지방">지방</option>
+    </select> <!-- {{option}}-->
+  </form>
+
+  <!--운동버튼을 누르면 (true)-->
+  <form class="s-form" v-if="click_exer">
+    <select v-model="option" @change="filter_search">
+      <option value="undefined">-선택-</option>
+      <option value="All">All</option>
+      <option value="유산소">유산소</option>
+      <option value="무산소">무산소</option>
+      <option value="스트레칭">스트레칭</option>
     </select> <!-- {{option}}-->
   </form>
 
@@ -47,6 +66,9 @@ export default {
 
       todo_per : 0,
       todo_per2 : 0,
+
+      click_diet : false,
+      click_exer : false,
 
       chartData:{
         'percentage': 0
@@ -93,19 +115,75 @@ export default {
       }this.filter_search_push=filter_search_data;
 
       // 필터 기능
-      if (this.option=='식단'){
+      if (this.option=='아침'){
         filter_search_data = [];
         for (var i=0; i<this.todoItems.length; i++){
-          if (this.todoItems[i].diet_exer.includes('식단')){
+          if (this.todoItems[i].category.includes('아침')){
             filter_search_data.push(this.todoItems[i]);
         }
       }this.filter_search_push=filter_search_data;
       }
-      else if (this.option=='운동'){
+      else if (this.option=='점심'){
         filter_search_data = [];
         for (var j=0; j<this.todoItems.length; j++){
-          if (this.todoItems[j].diet_exer.includes('운동')){
+          if (this.todoItems[j].category.includes('점심')){
             filter_search_data.push(this.todoItems[j]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='저녁'){
+        filter_search_data = [];
+        for (var a=0; a<this.todoItems.length; a++){
+          if (this.todoItems[a].category.includes('저녁')){
+            filter_search_data.push(this.todoItems[a]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='탄수화물'){
+        filter_search_data = [];
+        for (var b=0; b<this.todoItems.length; b++){
+          if (this.todoItems[b].attribute.includes('탄수화물')){
+            filter_search_data.push(this.todoItems[b]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='단백질'){
+        filter_search_data = [];
+        for (var c=0; c<this.todoItems.length; c++){
+          if (this.todoItems[c].attribute.includes('단백질')){
+            filter_search_data.push(this.todoItems[c]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='지방'){
+        filter_search_data = [];
+        for (var d=0; d<this.todoItems.length; d++){
+          if (this.todoItems[d].attribute.includes('지방')){
+            filter_search_data.push(this.todoItems[d]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='유산소'){
+        filter_search_data = [];
+        for (var e=0; e<this.todoItems.length; e++){
+          if (this.todoItems[e].category.includes('유산소')){
+            filter_search_data.push(this.todoItems[e]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='무산소'){
+        filter_search_data = [];
+        for (var f=0; f<this.todoItems.length; f++){
+          if (this.todoItems[f].category.includes('무산소')){
+            filter_search_data.push(this.todoItems[f]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }
+      else if (this.option=='스트레칭'){
+        filter_search_data = [];
+        for (var g=0; g<this.todoItems.length; g++){
+          if (this.todoItems[g].category.includes('스트레칭')){
+            filter_search_data.push(this.todoItems[g]);
         }
       }this.filter_search_push=filter_search_data;
       }
@@ -131,6 +209,12 @@ export default {
       this.chartData = {
         'percentage': parseFloat(this.todo_per2)
       }
+    },
+    clickDiet(){
+      this.click_diet = !this.click_diet;
+    },
+    clickExer(){
+      this.click_exer = !this.click_exer;
     }
 
   },
