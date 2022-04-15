@@ -3,18 +3,7 @@
   <button @click="DietExercise">Click to add list</button>
   <h1></h1> 
   <h1></h1> 
-  <h1></h1> 
-
-  <!-- 카테고리 필터링 부분 수정중 !!
-  <form class="s-form">
-    <select v-model="option" @change="changeOption">
-      <option value="All">All</option>
-      <option value="식단">식단</option>
-      <option value="운동">운동</option>
-    </select> {{option}}
-  </form> -->
-
-
+  <h1></h1>  
 
     <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
@@ -46,7 +35,7 @@
         <button @click="[setAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: this.clickprotein}">단백질</button>
         <button @click="[setAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: this.clickfat}">지방</button>
         
-        
+        <h6></h6>
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="shadow">
         <input type="text" placeholder="칼로리" v-on:change="setCalorie">
         
@@ -61,6 +50,8 @@
       </span>
     </modal>
 
+
+
 <!-- 운동 입력 부분 -->
       <modal v-if="showExercise" @close="showExercise = false">
       <span slot="footer">
@@ -70,6 +61,11 @@
         <button @click="[setCategory('무산소'), clickCategory('무산소')]" v-bind:class="{clickBtn: this.clickana}">무산소</button>
         <button @click="[setCategory('스트레칭'), clickCategory('스트레칭')]" v-bind:class="{clickBtn: this.clickstrech}">스트레칭</button>
 
+        <h6></h6>        
+        <input type="text" placeholder="횟수" v-on:change="setAmount" class="shadow">
+        <input type="text" placeholder="시간" v-on:change="setCalorie">
+   
+        <h5></h5>
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
@@ -98,8 +94,6 @@ export default {
   data() {
     return {
 
-      //option:'',
-
       newTodoItem: '',
       newAmount:'',
       newCalorie:'',
@@ -126,13 +120,9 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false,
+      clickfat: false
 
-      // 처음 필터값은 false(식단, 운동) -> 필터 클릭하면 해당 카테고리만 true로 바뀜
-      diet_tf:false,
-      exer_tf:false,
-      all_tf:false
-    
+   
     }
   },
 
@@ -140,8 +130,7 @@ export default {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie,
-                    this.diet_tf, this.diet_tf, this.all_tf);
+				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
         this.clearInput();
 
         //modal 창 삭제
@@ -171,6 +160,7 @@ export default {
       return this.diet_exer=de;
     },
 
+
     //카테고리 선택 버튼 클릭 시 스타일 변화 위한 메소드
     clickCategory(str){
       this.categorySelect =! this.categorySelect;
@@ -190,6 +180,8 @@ export default {
 
     clearInput() {
       this.newTodoItem = '';
+      this.newAmount=' ';
+      this.newCalorie=' ';
     },
     DietExercise(){
       this.popup=!this.popup;
@@ -216,17 +208,6 @@ export default {
       this.showExercise=!this.showExercise;
       this.popup = !this.popup;      
     }
-    /*changeOption(){
-      if (this.option=='식단'){
-        if (this.diet_exer=='식단') this.diet_tf = !this.diet_tf;
-      }
-      else if (this.option=='운동'){
-        if (this.diet_exer=='운동') this.exer_tf = !this.exer_tf;
-      }
-      else{
-        this.all_tf = !this.all_tf;
-      }
-    }*/
   },
   components: {
     Modal: Modal
