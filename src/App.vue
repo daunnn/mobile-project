@@ -9,7 +9,7 @@
   <!-- 카테고리 필터링 -->
   <button @click="clickDiet">식단</button>
   <button @click="clickExer">운동</button>
-  
+  <!--안녕-->
   <!--식단버튼을 누르면 (true)-->
   <form class="s-form" v-if="click_diet">
     <select v-model="option" @change="filter_search">
