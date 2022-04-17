@@ -82,26 +82,21 @@ import Modal from './common/AlertModal.vue'
 export default {
   data(){
     return{
-
       showModify: false,
       modifyTodo: {},
       modifyIndex: 0,
-
-
       todoItem:'',
       todoDietExer: '', //(식단/ 운동)
       todoCate: '', //(아침/ 유산소)
       todoAttri: '', //(탄단지/ )
       todoAmount: '', //(몇 g/ 운동 횟수)
       todoCal: '', //(칼로리/ 운동 시간)
-
       //수정한 내용 저장하는 변수들
       edititem: '',
       editamount: '',
       editattri: '',
       editcate: '',
       editcal:'',
-
       //카테고리 별 버튼 클릭 여부  
       clickbreak: false,
       
@@ -110,21 +105,13 @@ export default {
       clickaero: false,
       clickana: false,
       clickstrech: false,
-
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
       clickfat: false
-
-
     }
   },
-
-
-
-
   props: ['propsdata'],
-
   methods: {
     removeTodo(todo, index) {
       this.$emit('removeTodo', todo, index);
@@ -132,32 +119,25 @@ export default {
     toggleTodo(todo, index){
       this.$emit('toggleTodo', todo, index);
     },
-
-
     edit(todo, index){
       this.showModify=!this.showModify;
       this.modifyTodo=todo;
       this.modifyIndex=index;
-
       this.todoDietExer = todo['diet_exer'];
       this.todoItem=todo['item'];
       this.todoCate = todo['category'];
       this.todoAttri = todo['attribute'];
       this.todoAmount = todo['amount'];
       this.todoCal = todo['calorie'];
-
-
       this.edititem=this.todoItem;
       this.editattri=this.todoAttri;
       this.editcate=this.todoCate;
       this.editcal=this.todoCal;
       this.editamount=this.todoAmount;
       this.edititem=this.modifyTodo['item'];
-
       //버튼 클릭 초기화
       this.clickbreak=this.clicklaunch=this.clickeven=this.clickaero=this.clickana=this.clickstrech=this.clickcarbo=this.clickprotein=this.clickfat=false;
   
-
       if (this.todoCate=="아침") this.clickbreak=true;
    
       else if (this.todoCate=="점심") this.clicklaunch=true;
@@ -165,42 +145,28 @@ export default {
       else if (this.todoCate=="유산소") this.clickaero=true;
       else if (this.todoCate=="무산소") this.clickana=true;
       else if (this.todoCate=="스트레칭") this.clickstrech=true;
-
       if (this.todoAttri=="탄수화물") this.clickcarbo=true;
       else if (this.todoAttri=="단백질") this.clickprotein=true;
       else if (this.todoAttri=="지방") this.clickfat=true;
-
-
-
-
       
     },
     editAttribute(attr){
       return this.editattri=attr;
     },
-
-
     editItem(e){
       this.edititem=e.target.value;
     },
-
     editAmount(e){
       this.editamount=e.target.value;
     },
-
     editCal(e){
       this.editcal=e.target.value;
     },
-
     editCategory(cate){      
       return this.editcate=cate;
     },
-
-
-
     //카테고리 선택 버튼 클릭 시 스타일 변화 위한 메소드
     clickCategory(str){
-
       if (str=='아침') this.clickbreak=!this.clickbreak;
       if (str=='점심') this.clicklaunch=!this.clicklaunch;
       if (str=='저녁') this.clickeven =! this.clickeven;
@@ -208,29 +174,19 @@ export default {
       if (str=='무산소') this.clickana =! this.clickana;
       if (str=='스트레칭') this.clickstrech =! this.clickstrech;
     },
-
     clickAttribute(str){
       if (str=='탄수화물') this.clickcarbo = ! this.clickcarbo;
       if (str=='단백질') this.clickprotein =! this.clickprotein;
       if (str=='지방') this.clickfat =! this.clickfat;
     },
-
-
-
-
     submitEdit(){
       
       this.$emit('modifyTodo', this.modifyTodo, this.modifyIndex, this.edititem, this.editamount,  this.editcate, this.editattri, this.editcal);
       this.showModify=!this.showModify;
-
     },
   },
-
-
-
   components: {
     Modal: Modal,
-
   }
 }
 </script>
@@ -243,7 +199,6 @@ export default {
     text-align: left;
   }
   
-
   li {
     display: flex;
     min-height: 50px;
@@ -282,8 +237,5 @@ export default {
   .removeContainer{
   background: rgb(64, 64, 64)
 }
-
   
-
-
 </style>

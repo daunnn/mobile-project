@@ -31,21 +31,6 @@
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
      @modifyTodo="modifyTodo"></TodoList>{{todo_per2}} {{calorie}} {{total_cal}}
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
-/*    @modifyTodo="modifyTodo"></TodoList>
-    <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
-
-  <!-- 카테고리 필터링 부분 수정중 !!!-->
-  <form class="s-form">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="식단">식단</option>
-      <option value="운동">운동</option>
-    </select> <!-- {{option}}-->
-  </form>
-
-   <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  /> */ 
-
 
  
 
@@ -97,7 +82,6 @@ import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
 import dayjs from 'dayjs'
 import Modal from './components/common/AlertModal.vue'
-
 export default {
   name: 'app',
   
@@ -105,59 +89,43 @@ export default {
      const temp_today = dayjs().format("YYYY-MM-DD").split('-').map(str => Number(str));
      // const temp_deadline = dayjs("2022-04-13").format("YYYY-MM-DD").split('-').map(str => Number(str)); 
     return {
-
-
-
       todoItems: [], //todos
-
       option:'',
       filter_search_push:[],
       search : '',
       today_info : dayjs().format("YYYY-MM-DD"), // 오늘 날짜
-
       
       // 날짜를 초로 변경
       today : new Date(temp_today[0], temp_today[1], temp_today[2]).getTime(),
       // deadline: new Date(temp_deadline[0], temp_deadline[1], temp_deadline[2]).getTime(),
       elapsedDay: '',
-
       ddayModify: false,
       showdday:false,
-
       newdday: '',
       newwork: '',
       deadline:'',
-
-
       todo_per : 0,
       todo_per2 : 0,
-
       click_diet : false,
       click_exer : false,
-
       calorie:0,
       total_cal:0,
-
       chartData:{
-        'percentage': 1
+        'percentage': 0
       },
       chartData1:{
-        'calorie': 1
+        'calorie': 0
       }
-
     }
   },
-
   methods: {
     removedday(){
       localStorage.removeItem(localStorage.key('dday_info'));
       this.showdday = false;
-
     },
     setdday(e){
       this.newdday = e.target.value; // 입력 받은 날짜를 newdday에 할당
       const newdday_str = this.newdday.split('-').map(str => Number(str)); // 계산 format으로 변경
-
       this.deadline = new Date(newdday_str[0], newdday_str[1], newdday_str[2]).getTime(); // 초로 변경
       
           //d-day 계산
@@ -168,9 +136,7 @@ export default {
       var dday_info ={work:this.newwork, dday:this.elapsedDay};
       localStorage.setItem('dday_info',JSON.stringify(dday_info));
       
-
     },
-
     setwork(e){
      return this.newwork=e.target.value;
     },
@@ -184,7 +150,6 @@ export default {
       this.filter_search_push=[];
     },
 		addTodo(todoItem, diet_exer, cate, attri, amount, calorie) {
-
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
                calorie: calorie};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
@@ -231,60 +196,44 @@ export default {
       localStorage.setItem('calorie', parseInt(this.calorie) );
       localStorage.setItem('total_calorie', parseInt(this.total_cal) );
     },
-
-
-
     modifyTodo(todo, index, newitem, newamount, newcate, newattri, newcal){
       localStorage.removeItem(todo.item);
       
       
-
       var obj={completed: this.todoItems[index].completed, item: newitem, diet_exer:this.todoItems[index].diet_exer, 
               category:newcate, attribute: newattri, amount: newamount, calorie: newcal};
-
       this.todoItems.splice(index, 1);
       this.todoItems.push(obj);
       this.filter_search_push=this.todoItems;
       
       localStorage.setItem(newitem, JSON.stringify(obj));
     },
-
-
     filter_search(){
       var filter_search_data = [];
       this.filter_search_push=[];
-
       // 검색 기능
       for (var m = 0; m < this.todoItems.length; m++){
         if (this.todoItems[m].item.includes(this.search)) {
           filter_search_data.push(this.todoItems[m]);
         } 
-
       }this.filter_search_push=filter_search_data;
-
       // 필터 기능
-
-
       if (this.option=='아침'){
         filter_search_data = [];
         for (var i=0; i<this.todoItems.length; i++){
           if (this.todoItems[i].category.includes('아침')){
-
             filter_search_data.push(this.todoItems[i]);
         }
       }this.filter_search_push=filter_search_data;
       }
-
       else if (this.option=='점심'){
         filter_search_data = [];
         for (var j=0; j<this.todoItems.length; j++){
           if (this.todoItems[j].category.includes('점심')){
-
             filter_search_data.push(this.todoItems[j]);
         }
       }this.filter_search_push=filter_search_data;
       }
-
       else if (this.option=='저녁'){
         filter_search_data = [];
         for (var a=0; a<this.todoItems.length; a++){
@@ -341,33 +290,23 @@ export default {
         }
       }this.filter_search_push=filter_search_data;
       }
-
       else if (this.option=='All'){ 
         filter_search_data = [];
         for (var k=0; k<this.todoItems.length; k++){
           filter_search_data.push(this.todoItems[k]);
         }
       }this.filter_search_push=filter_search_data;
-
-
-
     },
     clickDiet(){
       this.click_diet = !this.click_diet;
     },
     clickExer(){
       this.click_exer = !this.click_exer;
-
     }
-
   },
-
-
   
   created() {
-
 		if (localStorage.length > 0) {
-
       for (var i = 0; i < localStorage.length; i++) {
         if(localStorage.key(i)=='todo 퍼센트'){
           this.todo_per2 = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -388,7 +327,6 @@ export default {
         
         // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
         this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
-
         this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
       }
      }
@@ -401,14 +339,9 @@ export default {
         'calorie': parseInt(this.calorie)
       }
     /*console.log(this.todoItems)*/
-
     
    }
   },
-
-
-
-
   components: {
     'TodoHeader': TodoHeader,
     'TodoInput': TodoInput,
@@ -417,7 +350,6 @@ export default {
      Modal : Modal
   }
 }
-
 </script>
 
 

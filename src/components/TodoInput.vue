@@ -95,7 +95,6 @@ import Modal from './common/AlertModal.vue'
 export default {
   data() {
     return {
-
       newTodoItem: '',
       newAmount:'',
       newCalorie:'',
@@ -103,11 +102,9 @@ export default {
       category: '',
       attribute: '',
       popup: false,
-
       showModal: false,
       showDiet: false,
       showExercise: false,
-
       //카테고리 별 버튼 클릭 여부  
       clickbreak: false,
       clicklaunch: false,
@@ -115,32 +112,25 @@ export default {
       clickaero: false,
       clickana: false,
       clickstrech: false,
-
       //카테고리 선택 여부
       categorySelect: false,
-
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-
       clickfat: false   
-
     }
   },
-
   methods: {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
 				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
         this.clearInput();
-
         //modal 창 삭제
         this.showDiet = false;
         this.showExercise = false;
       } else {
         this.showModal = !this.showModal;
-
       }
     },
     setItem(e){
@@ -161,8 +151,6 @@ export default {
     setDiet_Exer(de){
       return this.diet_exer=de;
     },
-
-
     //카테고리 선택 버튼 클릭 시 스타일 변화 위한 메소드
     clickCategory(str){
       this.categorySelect =! this.categorySelect;
@@ -173,21 +161,20 @@ export default {
       if (str=='무산소') this.clickana =! this.clickana;
       if (str=='스트레칭') this.clickstrech =! this.clickstrech;
     },
-
     clickAttribute(str){
       if (str=='탄수화물') this.clickcarbo = ! this.clickcarbo;
       if (str=='단백질') this.clickprotein =! this.clickprotein;
       if (str=='지방') this.clickfat =! this.clickfat;
     },
-
     clearInput() {
       this.newTodoItem = '';
       this.newAmount=' ';
       this.newCalorie=' ';
-    },
+      this.attribute=' ';
+      this.category=' ';
+      },
     DietExercise(){
       this.popup=!this.popup;
-
       //버튼 클릭 여부 초기화
       this.clickbreak=false;
       this.clicklaunch=false;
@@ -196,12 +183,10 @@ export default {
       this.clickana=false;
       this.clickstrech=false;
       this.categorySelect=false;
-
       this.clickcarbo = false;
       this.clickprotein = false;
       this.clickfat =false;     
     },
-
     diet(){
       this.showDiet=!this.showDiet;
       this.popup = !this.popup;      
@@ -221,7 +206,6 @@ export default {
 input:focus {
   outline: none;
 }
-
 .inputBox {
   background: white;
   height: 50px;
@@ -249,5 +233,4 @@ input:focus {
 .clickBtn{
   background-color:rgb(116, 115, 115);
 }
-
 </style>
