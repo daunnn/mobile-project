@@ -39,6 +39,8 @@
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="shadow">
         <input type="text" placeholder="칼로리" v-on:change="setCalorie">
         
+
+
         <h5></h5>
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
@@ -120,9 +122,9 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false
 
-   
+      clickfat: false   
+
     }
   },
 
