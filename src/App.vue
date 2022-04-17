@@ -1,6 +1,31 @@
 <template>
   <div id="app">
     <TodoHeader></TodoHeader>
+    <p > 오늘 날짜 : {{today_info}} </p>
+    <p v-if="showdday"> {{newwork}} 
+    D-{{elapsedDay}} </p>
+
+     <!--d-day-->
+    <button @click="ddayTodo()" type="button">d-day</button>
+
+
+     <button @click="removedday()" >
+          <i class="addBtn fas fa-times" ></i>
+      </button>
+
+     <modal v-if="ddayModify">
+       <span slot="footer" > 할 일의 마감기한을 설정해주세요.
+        <h1></h1> 
+        <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
+        <h1></h1> 
+        <input type="date" v-on:change="setdday">
+           <button @click="ddayModify = false" >
+              <i class="addBtn fas fa-times" aria-hidden="true"></i>
+           </button>
+          </span>
+      </modal>
+
+
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
     @modifyTodo="modifyTodo"></TodoList>{{todo_per2}} {{calorie}} {{total_cal}}
@@ -51,11 +76,15 @@ import TodoHeader from './components/TodoHeader.vue'
 import TodoInput from './components/TodoInput.vue'
 import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
+import dayjs from 'dayjs'
+import Modal from './components/common/AlertModal.vue'
 
 export default {
   name: 'app',
   
   data() {
+     const temp_today = dayjs().format("YYYY-MM-DD").split('-').map(str => Number(str));
+     // const temp_deadline = dayjs("2022-04-13").format("YYYY-MM-DD").split('-').map(str => Number(str)); 
     return {
 
 
@@ -64,6 +93,21 @@ export default {
       option:'',
       filter_search_push:[],
       search : '',
+      today_info : dayjs().format("YYYY-MM-DD"), // 오늘 날짜
+
+      
+      // 날짜를 초로 변경
+      today : new Date(temp_today[0], temp_today[1], temp_today[2]).getTime(),
+      // deadline: new Date(temp_deadline[0], temp_deadline[1], temp_deadline[2]).getTime(),
+      elapsedDay: '',
+
+      ddayModify: false,
+      showdday:false,
+
+      newdday: '',
+      newwork: '',
+      deadline:'',
+
 
       todo_per : 0,
       todo_per2 : 0,
@@ -83,11 +127,40 @@ export default {
     }
   },
   methods: {
+    removedday(){
+      localStorage.removeItem(localStorage.key('dday_info'));
+      this.showdday = false;
+
+    },
+    setdday(e){
+      this.newdday = e.target.value; // 입력 받은 날짜를 newdday에 할당
+      const newdday_str = this.newdday.split('-').map(str => Number(str)); // 계산 format으로 변경
+
+      this.deadline = new Date(newdday_str[0], newdday_str[1], newdday_str[2]).getTime(); // 초로 변경
+      
+          //d-day 계산
+       const elapsedMSec = this.deadline - this.today;
+       this.elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
+      this.showdday = true;
+      this.ddayModify = false;
+      var dday_info ={work:this.newwork, dday:this.elapsedDay};
+      localStorage.setItem('dday_info',JSON.stringify(dday_info));
+      
+
+    },
+
+    setwork(e){
+     return this.newwork=e.target.value;
+    },
+    ddayTodo(){
+      this.ddayModify = !this.ddayModify;
+    },
     clearAll() {
       localStorage.clear();
       this.todoItems = [];
     },
 		addTodo(todoItem, diet_exer, cate, attri, amount, calorie) {
+      
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
                calorie: calorie};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
@@ -246,8 +319,9 @@ export default {
 
   },
   created() {
-    
+
 		if (localStorage.length > 0) {
+
       for (var i = 0; i < localStorage.length; i++) {
         if(localStorage.key(i)=='todo 퍼센트'){
           this.todo_per2 = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -257,12 +331,21 @@ export default {
           this.calorie = JSON.parse(localStorage.getItem(localStorage.key(i)));
         }else if(localStorage.key(i)=='total_calorie') {
           this.total_cal = JSON.parse(localStorage.getItem(localStorage.key(i)));
-        }else{
+        }else if(localStorage.key(i) != 'dday_info'){
             var temp =JSON.parse(localStorage.getItem(localStorage.key(i)));
             this.todoItems.push(temp);
-            this.filter_search_push.push(temp);
-        }
+            this.filter_search_push.push(temp);       
+        }else{
+        if(localStorage.key(i).length>0){
+          this.showdday = true
+        var temps = localStorage.getItem(localStorage.key(i));
+        
+        // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
+        this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
+
+        this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
       }
+     }
     }
     // 자동으로 차트 업데이트
     this.chartData = {
@@ -272,12 +355,39 @@ export default {
         'calorie': parseInt(this.calorie)
       }
     /*console.log(this.todoItems)*/
+
+   /*    
+			for (var i = 0; i < localStorage.length; i++) {
+        if(localStorage.key(i) != 'dday_info'){
+        var temp =JSON.parse(localStorage.getItem(localStorage.key(i)))
+        this.todoItems.push(temp);
+        this.filter_search_push.push(temp);
+			}else{
+        if(localStorage.key(i).length>0){
+          this.showdday = true
+        var temps = localStorage.getItem(localStorage.key(i));
+        
+        // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
+        this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
+
+        this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
+        
+
+        }
+      }
+      }
+		} */
+    
+   
+    
+
   },
   components: {
     'TodoHeader': TodoHeader,
     'TodoInput': TodoInput,
     'TodoList': TodoList,
-    'TodoFooter': TodoFooter
+    'TodoFooter': TodoFooter,
+     Modal : Modal
   }
 }
 
