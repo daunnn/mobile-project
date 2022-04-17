@@ -113,9 +113,7 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false
-
-   
+      clickfat: false   
     }
   },
 
