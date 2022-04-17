@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    
     <TodoHeader></TodoHeader>
     <p > 오늘 날짜 : {{today_info}} </p>
     <p v-if="showdday"> {{newwork}} 
@@ -28,8 +29,25 @@
 
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-    @modifyTodo="modifyTodo"></TodoList>{{todo_per2}} {{calorie}} {{total_cal}}
+     @modifyTodo="modifyTodo"></TodoList>{{todo_per2}} {{calorie}} {{total_cal}}
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
+/*    @modifyTodo="modifyTodo"></TodoList>
+    <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
+
+  <!-- 카테고리 필터링 부분 수정중 !!!-->
+  <form class="s-form">
+    <select v-model="option" @change="filter_search">
+      <option value="undefined">-선택-</option>
+      <option value="All">All</option>
+      <option value="식단">식단</option>
+      <option value="운동">운동</option>
+    </select> <!-- {{option}}-->
+  </form>
+
+   <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  /> */ 
+
+
+ 
 
   <!-- 카테고리 필터링 -->
   <button @click="clickDiet">식단</button>
@@ -67,6 +85,7 @@
    <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
 
    
+
   </div>
 
 </template>
@@ -86,6 +105,7 @@ export default {
      const temp_today = dayjs().format("YYYY-MM-DD").split('-').map(str => Number(str));
      // const temp_deadline = dayjs("2022-04-13").format("YYYY-MM-DD").split('-').map(str => Number(str)); 
     return {
+
 
 
       todoItems: [], //todos
@@ -124,8 +144,10 @@ export default {
       chartData1:{
         'calorie': 1
       }
+
     }
   },
+
   methods: {
     removedday(){
       localStorage.removeItem(localStorage.key('dday_info'));
@@ -158,9 +180,11 @@ export default {
     clearAll() {
       localStorage.clear();
       this.todoItems = [];
+      this.temp=[];
+      this.filter_search_push=[];
     },
 		addTodo(todoItem, diet_exer, cate, attri, amount, calorie) {
-      
+
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
                calorie: calorie};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
@@ -172,18 +196,16 @@ export default {
       this.todoItems.splice(index, 1);
       this.filter_search_push=this.todoItems;
     },
-    toggleTodo(todo, index){
+   toggleTodo(todo, index){
       // 완료 기능
       this.todoItems[index].completed = !this.todoItems[index].completed;
       localStorage.removeItem(todo.item);
       localStorage.setItem(todo.item, JSON.stringify(todo));
-
       // 진행상황 퍼센트 및 칼로리 업데이트
       this.todo_per = 0;
       var count = 0;
       this.calorie = 0;
       this.total_cal = 0;
-
       for (var i=0; i<this.todoItems.length; i++){
           if (this.todoItems[i].completed == true){
             count = count + 1;
@@ -197,7 +219,6 @@ export default {
     } this.todo_per = count / this.todoItems.length;
       this.todo_per = this.todo_per.toFixed(3);
       this.todo_per2 = this.todo_per;
-
       // 차트 업데이트
       this.chartData = {
         'percentage': parseFloat(this.todo_per2)
@@ -205,19 +226,30 @@ export default {
       this.chartData1 = {
         'calorie': parseInt(this.calorie)
       }
-
       // 로컬 스토리지 저장
       localStorage.setItem('todo 퍼센트', parseFloat(this.todo_per2) );
       localStorage.setItem('calorie', parseInt(this.calorie) );
       localStorage.setItem('total_calorie', parseInt(this.total_cal) );
-
-
     },
-    modifyTodo(todo, index, newitem){
+
+
+
+    modifyTodo(todo, index, newitem, newamount, newcate, newattri, newcal){
       localStorage.removeItem(todo.item);
-      this.todoItems[index].item = newitem;
-      localStorage.setItem(newitem, JSON.stringify(todo));
+      
+      
+
+      var obj={completed: this.todoItems[index].completed, item: newitem, diet_exer:this.todoItems[index].diet_exer, 
+              category:newcate, attribute: newattri, amount: newamount, calorie: newcal};
+
+      this.todoItems.splice(index, 1);
+      this.todoItems.push(obj);
+      this.filter_search_push=this.todoItems;
+      
+      localStorage.setItem(newitem, JSON.stringify(obj));
     },
+
+
     filter_search(){
       var filter_search_data = [];
       this.filter_search_push=[];
@@ -231,22 +263,28 @@ export default {
       }this.filter_search_push=filter_search_data;
 
       // 필터 기능
+
+
       if (this.option=='아침'){
         filter_search_data = [];
         for (var i=0; i<this.todoItems.length; i++){
           if (this.todoItems[i].category.includes('아침')){
+
             filter_search_data.push(this.todoItems[i]);
         }
       }this.filter_search_push=filter_search_data;
       }
+
       else if (this.option=='점심'){
         filter_search_data = [];
         for (var j=0; j<this.todoItems.length; j++){
           if (this.todoItems[j].category.includes('점심')){
+
             filter_search_data.push(this.todoItems[j]);
         }
       }this.filter_search_push=filter_search_data;
       }
+
       else if (this.option=='저녁'){
         filter_search_data = [];
         for (var a=0; a<this.todoItems.length; a++){
@@ -303,21 +341,29 @@ export default {
         }
       }this.filter_search_push=filter_search_data;
       }
+
       else if (this.option=='All'){ 
         filter_search_data = [];
         for (var k=0; k<this.todoItems.length; k++){
           filter_search_data.push(this.todoItems[k]);
         }
       }this.filter_search_push=filter_search_data;
+
+
+
     },
     clickDiet(){
       this.click_diet = !this.click_diet;
     },
     clickExer(){
       this.click_exer = !this.click_exer;
+
     }
 
   },
+
+
+  
   created() {
 
 		if (localStorage.length > 0) {
@@ -356,32 +402,13 @@ export default {
       }
     /*console.log(this.todoItems)*/
 
-   /*    
-			for (var i = 0; i < localStorage.length; i++) {
-        if(localStorage.key(i) != 'dday_info'){
-        var temp =JSON.parse(localStorage.getItem(localStorage.key(i)))
-        this.todoItems.push(temp);
-        this.filter_search_push.push(temp);
-			}else{
-        if(localStorage.key(i).length>0){
-          this.showdday = true
-        var temps = localStorage.getItem(localStorage.key(i));
-        
-        // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
-        this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
-
-        this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
-        
-
-        }
-      }
-      }
-		} */
     
-   
-    
-
+   }
   },
+
+
+
+
   components: {
     'TodoHeader': TodoHeader,
     'TodoInput': TodoInput,
@@ -392,6 +419,10 @@ export default {
 }
 
 </script>
+
+
+
+
 
 <style>
   body {

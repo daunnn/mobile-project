@@ -35,10 +35,12 @@
         <button @click="[setAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: this.clickprotein}">단백질</button>
         <button @click="[setAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: this.clickfat}">지방</button>
         
-        
+        <h6></h6>
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="shadow">
         <input type="text" placeholder="칼로리" v-on:change="setCalorie">
         
+
+
         <h5></h5>
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
@@ -50,6 +52,8 @@
       </span>
     </modal>
 
+
+
 <!-- 운동 입력 부분 -->
       <modal v-if="showExercise" @close="showExercise = false">
       <span slot="footer">
@@ -59,6 +63,11 @@
         <button @click="[setCategory('무산소'), clickCategory('무산소')]" v-bind:class="{clickBtn: this.clickana}">무산소</button>
         <button @click="[setCategory('스트레칭'), clickCategory('스트레칭')]" v-bind:class="{clickBtn: this.clickstrech}">스트레칭</button>
 
+        <h6></h6>        
+        <input type="text" placeholder="횟수" v-on:change="setAmount" class="shadow">
+        <input type="text" placeholder="시간" v-on:change="setCalorie">
+   
+        <h5></h5>
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
@@ -113,7 +122,9 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
+
       clickfat: false   
+
     }
   },
 
@@ -171,6 +182,8 @@ export default {
 
     clearInput() {
       this.newTodoItem = '';
+      this.newAmount=' ';
+      this.newCalorie=' ';
     },
     DietExercise(){
       this.popup=!this.popup;
