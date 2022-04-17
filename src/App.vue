@@ -26,11 +26,9 @@
           </span>
       </modal>
 
-
-    <TodoInput v-on:addTodo="addTodo"></TodoInput>
-    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-     @modifyTodo="modifyTodo"></TodoList>{{todo_per2}} {{calorie}} {{total_cal}}
-    <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
+       <!-- vue-chartkick 이용-->
+   <bar-chart :data="chartData"  width="300" height="300" min="0" max="1"></bar-chart> <!--:data="chart"-->
+   <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
 
  
 
@@ -65,11 +63,11 @@
 
    <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
    
-   <!-- vue-chartkick 이용-->
-   <bar-chart :data="chartData"  width="300" height="300" min="0" max="1"></bar-chart> <!--:data="chart"-->
-   <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
+    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
+     @modifyTodo="modifyTodo"></TodoList>
+   <TodoInput v-on:addTodo="addTodo"></TodoInput>
+    <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 
-   
 
   </div>
 

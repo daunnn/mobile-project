@@ -1,9 +1,8 @@
 <template>
   <div>
-  <button @click="DietExercise">Click to add list</button>
-  <h1></h1> 
-  <h1></h1> 
-  <h1></h1>  
+
+  <!-- <button @click="DietExercise">Click to add list</button> -->
+
 
     <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
@@ -85,6 +84,14 @@
         <i class="closeModalBtn fas fa-times" aria-hidden="true"></i>
       </span>
     </modal>
+
+    <v-btn
+      class="mx-2" fab dark color="indigo" @click="DietExercise">
+      <v-icon dark>
+        mdi-plus
+      </v-icon>
+    </v-btn>
+
 
 
   </div>
