@@ -14,53 +14,69 @@
         <span class="updateBtn" type="button" @click="edit(todo, index)">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i> 
         </span>
+
         <modal v-if="showModify">
-          <span slot ="footer">
+          <span slot ="header">
 
             <!--식단-->
-            <div class="inputBox shadow" v-if="modifyTodo.diet_exer=='식단'">
+            <div v-if="modifyTodo.diet_exer=='식단'">
 
             <input type="text" :value="todoItem" v-on:change="editItem"> <!--item 수정-->
-            <h6></h6>
+            
+            <v-btn class="buttons" v-if="clickbreak" color="rgb(115, 115, 115)" @click="[editCategory('아침'), clickCategory('아침')]">아침</v-btn>
+            <v-btn class="buttons" v-if="!clickbreak" @click="[editCategory('아침'), clickCategory('아침')]">아침</v-btn>
 
-            <button @click="[editCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: clickbreak}">아침</button>
-            <button @click="[editCategory('점심'), clickCategory('점심')]" v-bind:class="{clickBtn: clicklaunch}">점심</button>
-            <button @click="[editCategory('저녁'), clickCategory('저녁')]" v-bind:class="{clickBtn: clickeven}">저녁</button>
-            <h6></h6>
+            <v-btn class="buttons" v-if="clicklaunch" color="rgb(115, 115, 115)" @click="[editCategory('점심'), clickCategory('점심')]">점심</v-btn>
+            <v-btn class="buttons" v-if="!clicklaunch" @click="[editCategory('점심'), clickCategory('점심')]">점심</v-btn>
 
-            <button @click="[editAttribute('탄수화물'), clickAttribute('탄수화물')]"  v-bind:class="{clickBtn: clickcarbo}" >탄수화물</button>
-            <button @click="[editAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: clickprotein}">단백질</button>
-            <button @click="[editAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: clickfat}">지방</button>
+            <v-btn class="buttons" v-if="clickeven" color="rgb(115, 115, 115)" @click="[editCategory('저녁'), clickCategory('저녁')]">저녁</v-btn>
+            <v-btn class="buttons" v-if="!clickeven" @click="[editCategory('저녁'), clickCategory('저녁')]">저녁</v-btn>
+        
+        
+            <v-btn class="buttons" v-if="clickcarbo" color="rgb(115, 115, 115)" @click="[editAttribute('탄수화물'), clickAttribute('탄수화물')]">탄수화물</v-btn>
+            <v-btn class="buttons" v-if="!clickcarbo" @click="[editAttribute('탄수화물'), clickAttribute('탄수화물')]" >탄수화물</v-btn>
+
+            <v-btn class="buttons" v-if="clickprotein" color="rgb(115, 115, 115)" @click="[editAttribute('단백질'), clickAttribute('단백질')]">단백질</v-btn>
+            <v-btn class="buttons" v-if="!clickprotein" @click="[editAttribute('단백질'), clickAttribute('단백질')]" >단백질</v-btn>
+        
+            <v-btn class="buttons" v-if="clickfat" color="rgb(115, 115, 115)" @click="[editAttribute('지방'), clickAttribute('지방')]">지방</v-btn>
+            <v-btn class="buttons" v-if="!clickfat" @click="[editAttribute('지방'), clickAttribute('지방')]" >지방</v-btn>
+
 
             <input type="text" :value="todoAmount" v-on:change="editAmount" class="shadow"><!--amount 수정-->
             <input type="text" :value="todoCal" v-on:change="editCal"> <!--calorie 수정-->
 
-            <h6></h6>
-            <button @click="showModify = false" class="removeContainer" >
+            <v-btn class="buttons" @click="submitEdit()">수정</v-btn>
+            <v-btn class="buttons" @click="showModify = false" color="rgb(115,115,115)">
               <i class="addBtn fas fa-times" aria-hidden="true"></i>
-            </button>
-            <button @click="submitEdit()">수정</button>
+            </v-btn>
+
+            
+            
            
             </div>
 
             <!--운동-->
-            <div class="inputBox shadow" v-if="modifyTodo.diet_exer=='운동'">
+            <div v-if="modifyTodo.diet_exer=='운동'">
             <input type="text" :value="todoItem" v-on:change="editItem"> <!--item 수정-->
-            <h6></h6>
 
-            <button @click="[editCategory('유산소'), clickCategory('유산소')]" v-bind:class="{clickBtn: clickaero}">유산소</button>
-            <button @click="[editCategory('무산소'), clickCategory('무산소')]" v-bind:class="{clickBtn: clickana}">무산소</button>
-            <button @click="[editCategory('스트레칭'), clickCategory('스트레칭')]" v-bind:class="{clickBtn: clickstrech}">스트레칭</button>
-            <h6></h6>
+            <v-btn class="buttons" v-if="clickaero" color="rgb(115, 115, 115)" @click="[editCategory('유산소'), clickCategory('유산소')]">유산소</v-btn>
+            <v-btn class="buttons" v-if="!clickaero" @click="[editCategory('유산소'), clickCategory('유산소')]">유산소</v-btn>
+
+            <v-btn class="buttons" v-if="clickana" color="rgb(115, 115, 115)" @click="[editCategory('무산소'), clickCategory('무산소')]">무산소</v-btn>
+            <v-btn class="buttons" v-if="!clickana" @click="[editCategory('무산소'), clickCategory('무산소')]">무산소</v-btn>
+
+            <v-btn class="buttons" v-if="clickstrech" color="rgb(115, 115, 115)" @click="[editCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
+            <v-btn class="buttons" v-if="!clickstrech" @click="[editCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
 
             <input type="text" :value="todoAmount" v-on:change="editAmount" class="shadow"><!--amount 수정-->
             <input type="text" :value="todoCal" v-on:change="editCal"> <!--calorie 수정-->
 
-            <h6></h6>
-            <button @click="showModify = false" class="removeContainer">
+            <v-btn class="buttons" @click="submitEdit()">수정</v-btn>
+            <v-btn class="buttons" @click="showModify = false" color="rgb(115,115,115)">
               <i class="addBtn fas fa-times" aria-hidden="true"></i>
-            </button>
-            <button @click="submitEdit()">수정</button>
+            </v-btn>
+            
             </div>
             
 
@@ -237,11 +253,44 @@ export default {
     opacity: 0;
     transform: translateY(30px);
   }
-  .clickBtn{
-    background-color:rgb(116, 115, 115);
+  
+  input:focus {
+    outline: none;
   }
-  .removeContainer{
-  background: rgb(64, 64, 64)
-}
+
+  span {
+    display: flex;
+    max-width: 100%;
+    display: table;
+  }
+
+  .inputBox {
+    background: white;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 5px;
+  }
+  .inputBox input {
+    border-style: none;
+    font-size: 0.9rem;
+  }
+
+
+
+  .buttons{
+    margin-top : 10px;
+    margin-right:10px;
+    margin-bottom: 5px;
+    display:inline;
+    padding:5px;
+  }
+
+
+  .texts{
+    margin-top:10px;
+    margin-bottom: 10px;
+    margin-right:10px;
+  }
+
   
 </style>
