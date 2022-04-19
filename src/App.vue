@@ -12,7 +12,7 @@
       scroll-target="#scrolling-techniques-6"
     >
       <v-toolbar-title>
-        <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
+        <input color='white' class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
       </v-toolbar-title>
 
       
@@ -159,6 +159,7 @@ export default {
     }
   },
   methods: {
+    
     removedday(){
       localStorage.removeItem(localStorage.key('dday_info'));
       this.showdday = false;
@@ -439,6 +440,9 @@ export default {
   margin-top:10px;
 }
  
+ .stage-search{
+   color:white;
+ }
 
 
   body {
@@ -460,7 +464,7 @@ export default {
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
-    margin-top:-10px;
+   
   }
   .button2 {
     float:left;
@@ -468,7 +472,7 @@ export default {
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
-    margin-top:-10px;
+   
   }
 
   span {
