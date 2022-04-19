@@ -277,11 +277,9 @@ span {
   /* margin:auto; */
   display: block;
   /* left:75%; */
-
-  
   position:relative;
-  left:9%;
   top: 80px;
+  align-content: center;
 
 
 }

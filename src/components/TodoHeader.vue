@@ -24,9 +24,10 @@ export default {
       position: absolute;
       top: 10px;
       left: 0;
-      padding: 20px;
-      font-size:30px;
-      margin-left:5%
+      padding: 10px;
+      font-size:25px;
+      margin-left:5%;
+      color:#657084;
       
       
 
@@ -36,7 +37,6 @@ export default {
  
     position: relative;
     top: 10px;
-    color: #657084;
     font-weight: 900;
     margin: 2.5rem 0 1.5rem;
     
