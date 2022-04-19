@@ -212,11 +212,16 @@ export default {
   .checkBtn {
     line-height: 45px;
     color: #62acde;
-    margin-right: 5px;
+    margin-left: 10px;
+    margin-right: 20px;
   }
   .removeBtn {
-    margin-left: auto;
+    margin-left: 20px;
     color: #de4343;
+  }
+  .updateBtn{
+    margin-left : auto;
+    margin-right: 5px;
   }
   .checkBtnCompleted {
     color:#9b9898

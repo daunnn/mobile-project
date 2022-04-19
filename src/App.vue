@@ -1,15 +1,40 @@
 <template>
 
   <div id="app">
-    
+
+    <v-card>
+    <v-toolbar
+      :collapse="!collapseOnScroll"
+      :collapse-on-scroll="collapseOnScroll"
+      absolute style="right: 0px; "
+      dark
+      height="50px"
+      scroll-target="#scrolling-techniques-6"
+    >
+      <v-toolbar-title>
+        <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
+      </v-toolbar-title>
+
+      
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <vid class="material-icons" @click="collapseOnScroll=!collapseOnScroll">search</vid>
+
+      
+    </v-toolbar>
+    </v-card>
+   
+
     <TodoHeader></TodoHeader>
 
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
+
      <button class="button1" @click="removedday()" >
+
           <i class="addBtn fas fa-times" ></i>
       </button>
+    
 
       <button class="button1" @click="ddayTodo()" type="button">d-day</button>
 
@@ -25,52 +50,55 @@
           </span>
       </modal>
 
-
+      <h1></h1>
+    <div class = "bar">
        <!-- vue-chartkick 이용-->
-   <bar-chart :data="chartData"  width="300" height="300" min="0" max="1"></bar-chart> <!--:data="chart"-->
-   <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
+      <bar-chart :data="chartData"  height="50%" min="0" max="1" :colors="[['#18254D']]">
+      </bar-chart> <!--:data="chart"-->
+      <bar-chart :data="chartData1" height="50%" min="0" :max="total_cal" :colors="[['#18254D']]"></bar-chart>  <!-- :data="chart1"  -->
+    </div>
+    <h1></h1>
+ 
 
-  <!-- 카테고리 필터링 -->
-  <button class="button1" @click="clickExer">운동</button>
-  <button class="button1" @click="clickDiet">식단</button>
-  
-  
-  
-  <!--안녕-->
-  <!--식단버튼을 누르면 (true)-->
-  <form class="s-form" v-if="click_diet">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="아침">아침</option>
-      <option value="점심">점심</option>
-      <option value="저녁">저녁</option>
-      <option value="탄수화물">탄수화물</option>
-      <option value="단백질">단백질</option>
-      <option value="지방">지방</option>
-    </select> <!-- {{option}}-->
-  </form>
-
-  <!--운동버튼을 누르면 (true)-->
-  <form class="s-form" v-if="click_exer">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="유산소">유산소</option>
-      <option value="무산소">무산소</option>
-      <option value="스트레칭">스트레칭</option>
-    </select> <!-- {{option}}-->
-  </form>
-
-   <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
-   
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-     @modifyTodo="modifyTodo"></TodoList>
-   <TodoInput v-on:addTodo="addTodo"></TodoInput>
+    @modifyTodo="modifyTodo"></TodoList>
+
+<div data-app>
+  <v-layout class="boxOuter" align-end>
+    <!-- <v-row align="end"> -->
+       <!-- <v-col
+        class="d-inline"
+        cols="2"
+        sm="5"
+      >  -->
+        <v-select
+          :items="d_items"
+          v-model="option"
+          @change="filter_search"
+          label="식단"
+          dense
+          solo
+        ></v-select>
+
+        <v-select
+          :items="e_items"
+          v-model="option"
+          @change="filter_search"
+          label="운동"
+          dense
+          solo
+        ></v-select>
+      <!-- </v-col> -->
+    <!-- </v-row> -->
+    </v-layout>
+  </div>
+
+    <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 
-
+    
   </div>
+
 
 </template>
 
@@ -82,6 +110,7 @@ import TodoFooter from './components/TodoFooter.vue'
 import dayjs from 'dayjs'
 
 import Modal from './components/common/AlertModal.vue'
+
 export default {
   name: 'app',
   
@@ -111,11 +140,17 @@ export default {
       calorie:0,
       total_cal:0,
       chartData:{
-        'percentage': 0
+        'percent': 0
       },
       chartData1:{
         'calorie': 0
-      }
+      },
+
+      collapseOnScroll: false,
+
+      d_items: ['All','식단','아침','점심','저녁','탄수화물','단백질','지방'],
+      e_items: ['All','운동','유산소','무산소','스트레칭']
+
     }
   },
   methods: {
@@ -186,7 +221,7 @@ export default {
       this.todo_per2 = this.todo_per;
       // 차트 업데이트
       this.chartData = {
-        'percentage': parseFloat(this.todo_per2)
+        'percent': parseFloat(this.todo_per2)
       }
       this.chartData1 = {
         'calorie': parseInt(this.calorie)
@@ -289,11 +324,24 @@ export default {
             filter_search_data.push(this.todoItems[g]);
         }
       }this.filter_search_push=filter_search_data;
-      }
-      else if (this.option=='All'){ 
+      }else if (this.option=='식단'){
+        filter_search_data = [];
+        for (var h=0; h<this.todoItems.length; h++){
+          if (this.todoItems[h].diet_exer.includes('식단')){
+            filter_search_data.push(this.todoItems[h]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }else if (this.option=='운동'){
         filter_search_data = [];
         for (var k=0; k<this.todoItems.length; k++){
-          filter_search_data.push(this.todoItems[k]);
+          if (this.todoItems[k].diet_exer.includes('운동')){
+            filter_search_data.push(this.todoItems[k]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }else if (this.option=='All'){ 
+        filter_search_data = [];
+        for (var l=0; l<this.todoItems.length; l++){
+          filter_search_data.push(this.todoItems[l]);
         }
       }this.filter_search_push=filter_search_data;
     },
@@ -333,7 +381,7 @@ export default {
     }
     // 자동으로 차트 업데이트
     this.chartData = {
-        'percentage': parseFloat(this.todo_per2)
+        'percent': parseFloat(this.todo_per2)
       }
     this.chartData1 = {
         'calorie': parseInt(this.calorie)
@@ -357,6 +405,7 @@ export default {
 
 
 <style>
+
 
 @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
 
@@ -404,7 +453,7 @@ export default {
     
     font-family: 'Do Hyeon', sans-serif;
     text-align: center;
-    background-color: #F6F6F8;
+    background-color: rgb(236, 242, 255);
   }
   
  
@@ -434,6 +483,21 @@ export default {
     box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
   }
 
+  .bar{
+    
+    width: 85%;
+    height: 100px;
+    border: 1px solid #dcdcdc;
+    line-height: 50%; /* 세로 가운데 정렬 : line-height와 height값을 동일하게 처리합니다.*/ 
+    text-align: center;
+    display: inline-block; /* inline-block일때에만 가운데 정렬 가능 */ 
+    padding: 10px;
 
-  
+  }
+  .boxOuter {
+  height: 40px;
+  width: 250px;
+  float:right;
+  margin-bottom: 30px;
+}
 </style>
