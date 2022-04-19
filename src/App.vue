@@ -53,12 +53,13 @@
       <h1></h1>
     <div class = "bar">
        <!-- vue-chartkick 이용-->
-      <bar-chart :data="chartData"  height="50%" min="0" max="1" :colors="[['#18254D']]">
+      <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
       </bar-chart> <!--:data="chart"-->
-      <bar-chart :data="chartData1" height="50%" min="0" :max="total_cal" :colors="[['#18254D']]" ></bar-chart>  <!-- :data="chart1"  -->
+
+      <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
+
     </div>
     <h1></h1>
- 
 
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
     @modifyTodo="modifyTodo"></TodoList>
@@ -96,6 +97,7 @@
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 
+
     
   </div>
 
@@ -110,6 +112,7 @@ import TodoFooter from './components/TodoFooter.vue'
 import dayjs from 'dayjs'
 
 import Modal from './components/common/AlertModal.vue'
+
 
 export default {
   name: 'app',
@@ -486,10 +489,12 @@ export default {
   }
 
   .bar{
+
     
     font-family: 'Do Hyeon', sans-serif;
     position: relative;
     top:50px;
+
     width: 85%;
     height: 100px;
     border: 1px solid #dcdcdc;
@@ -497,12 +502,12 @@ export default {
     text-align: center;
     display: inline-block; /* inline-block일때에만 가운데 정렬 가능 */ 
     padding: 10px;
-   
 
   }
   .boxOuter {
+  color: #7d37ff;
   height: 40px;
-  width: 250px;
+  width: 150px;
   float:right;
   margin-bottom: 30px;
   position:relative;

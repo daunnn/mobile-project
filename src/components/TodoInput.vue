@@ -114,7 +114,7 @@ export default {
       popup: false,
       showModal: false,
       showDiet: false,
-      showExercise: false,
+      showExercise: false, 
       //카테고리 별 버튼 클릭 여부  
       clickbreak: false,
       clicklaunch: false,
@@ -277,12 +277,11 @@ span {
   /* margin:auto; */
   display: block;
   /* left:75%; */
+
   
   position:relative;
   left:9%;
   top: 80px;
-  
-
 
 
 }
