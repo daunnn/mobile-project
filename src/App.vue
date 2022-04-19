@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+
     <v-card>
     <v-toolbar
       :collapse="!collapseOnScroll"
@@ -20,23 +21,23 @@
       
     </v-toolbar>
     </v-card>
-    
-
-
- 
+   
 
     <TodoHeader></TodoHeader>
     <p > 오늘 날짜 : {{today_info}} </p>
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
+
      <!--d-day-->
+
     <button @click="ddayTodo()" type="button">d-day</button>
 
 
      <button @click="removedday()" >
           <i class="addBtn fas fa-times" ></i>
       </button>
+    
 
      <modal v-if="ddayModify">
        <span slot="footer" > 할 일의 마감기한을 설정해주세요.
@@ -52,6 +53,7 @@
       <h1></h1>
     <div class = "bar">
        <!-- vue-chartkick 이용-->
+
       <bar-chart :data="chartData"  height="50%" min="0" max="1" :colors="[['#18254D']]">
       </bar-chart> <!--:data="chart"-->
       <bar-chart :data="chartData1" height="50%" min="0" :max="total_cal" :colors="[['#18254D']]"></bar-chart>  <!-- :data="chart1"  -->
@@ -59,43 +61,45 @@
     <h1></h1>
  
 
-  <!-- 카테고리 필터링 -->
-  <button @click="clickDiet">식단</button>
-  <button @click="clickExer">운동</button>
-  <!--안녕-->
-  <!--식단버튼을 누르면 (true)-->
-  <form class="s-form" v-if="click_diet">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="아침">아침</option>
-      <option value="점심">점심</option>
-      <option value="저녁">저녁</option>
-      <option value="탄수화물">탄수화물</option>
-      <option value="단백질">단백질</option>
-      <option value="지방">지방</option>
-    </select> <!-- {{option}}-->
-  </form>
-
-  <!--운동버튼을 누르면 (true)-->
-  <form class="s-form" v-if="click_exer">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="유산소">유산소</option>
-      <option value="무산소">무산소</option>
-      <option value="스트레칭">스트레칭</option>
-    </select> <!-- {{option}}-->
-  </form>
-
-
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-     @modifyTodo="modifyTodo"></TodoList>
-   <TodoInput v-on:addTodo="addTodo"></TodoInput>
+    @modifyTodo="modifyTodo"></TodoList>
+
+<div data-app>
+  <v-layout class="boxOuter" align-end>
+    <!-- <v-row align="end"> -->
+       <!-- <v-col
+        class="d-inline"
+        cols="2"
+        sm="5"
+      >  -->
+        <v-select
+          :items="d_items"
+          v-model="option"
+          @change="filter_search"
+          label="식단"
+          dense
+          solo
+        ></v-select>
+
+        <v-select
+          :items="e_items"
+          v-model="option"
+          @change="filter_search"
+          label="운동"
+          dense
+          solo
+        ></v-select>
+      <!-- </v-col> -->
+    <!-- </v-row> -->
+    </v-layout>
+  </div>
+
+    <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 
-
+    
   </div>
+
 
 </template>
 
@@ -141,8 +145,11 @@ export default {
       chartData1:{
         'calorie': 0
       },
+
       collapseOnScroll: false,
 
+      d_items: ['All','식단','아침','점심','저녁','탄수화물','단백질','지방'],
+      e_items: ['All','운동','유산소','무산소','스트레칭']
 
     }
   },
@@ -317,11 +324,24 @@ export default {
             filter_search_data.push(this.todoItems[g]);
         }
       }this.filter_search_push=filter_search_data;
-      }
-      else if (this.option=='All'){ 
+      }else if (this.option=='식단'){
+        filter_search_data = [];
+        for (var h=0; h<this.todoItems.length; h++){
+          if (this.todoItems[h].diet_exer.includes('식단')){
+            filter_search_data.push(this.todoItems[h]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }else if (this.option=='운동'){
         filter_search_data = [];
         for (var k=0; k<this.todoItems.length; k++){
-          filter_search_data.push(this.todoItems[k]);
+          if (this.todoItems[k].diet_exer.includes('운동')){
+            filter_search_data.push(this.todoItems[k]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }else if (this.option=='All'){ 
+        filter_search_data = [];
+        for (var l=0; l<this.todoItems.length; l++){
+          filter_search_data.push(this.todoItems[l]);
         }
       }this.filter_search_push=filter_search_data;
     },
@@ -385,9 +405,10 @@ export default {
 
 
 <style>
+
   body {
     text-align: center;
-    background-color: #F6F6F8;
+    background-color: rgb(236, 242, 255);
   }
   input {
     border-style: groove;
@@ -410,6 +431,10 @@ export default {
     padding: 10px;
 
   }
-
-  
+  .boxOuter {
+  height: 40px;
+  width: 250px;
+  float:right;
+  margin-bottom: 30px;
+}
 </style>

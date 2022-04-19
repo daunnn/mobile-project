@@ -84,13 +84,15 @@
         <i class="closeModalBtn fas fa-times" aria-hidden="true"></i>
       </span>
     </modal>
-
+    
+<v-layout class="plus_location">
     <v-btn
       class="mx-2" fab dark color="indigo" @click="DietExercise">
       <v-icon dark>
         mdi-plus
       </v-icon>
     </v-btn>
+  </v-layout>
 
 
 
@@ -239,5 +241,11 @@ input:focus {
 }
 .clickBtn{
   background-color:rgb(116, 115, 115);
+}
+.plus_location{
+  /* margin:auto; */
+  display: block;
+  /* left:75%; */
+  margin-left:25%;
 }
 </style>
