@@ -55,7 +55,9 @@
        <!-- vue-chartkick 이용-->
       <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
       </bar-chart> <!--:data="chart"-->
+
       <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
+
     </div>
     <h1></h1>
 
@@ -383,9 +385,11 @@ export default {
     // 자동으로 차트 업데이트
     this.chartData = {
         'percent': parseFloat(this.todo_per2)
+        
       }
     this.chartData1 = {
         'calorie': parseInt(this.calorie)
+        
       }
     /*console.log(this.todoItems)*/
     
@@ -485,6 +489,12 @@ export default {
   }
 
   .bar{
+
+    
+    font-family: 'Do Hyeon', sans-serif;
+    position: relative;
+    top:50px;
+
     width: 85%;
     height: 100px;
     border: 1px solid #dcdcdc;
@@ -492,7 +502,7 @@ export default {
     text-align: center;
     display: inline-block; /* inline-block일때에만 가운데 정렬 가능 */ 
     padding: 10px;
-    font-size:1px;
+
   }
   .boxOuter {
   color: #7d37ff;
@@ -500,5 +510,8 @@ export default {
   width: 150px;
   float:right;
   margin-bottom: 30px;
+  position:relative;
+  top: 80px
 }
+
 </style>

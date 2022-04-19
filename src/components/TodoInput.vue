@@ -3,12 +3,11 @@
 
   <!-- <button @click="DietExercise">Click to add list</button> -->
 
-
     <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
-         
-     
-        <v-btn class="buttons" @click="[diet(), setDiet_Exer('식단')]" type="button">식단</v-btn>
+
+
+        <v-btn  class="buttons" @click="[diet(), setDiet_Exer('식단')]" type="button">식단</v-btn>
         <v-btn class="buttons" @click="[exer(), setDiet_Exer('운동')]" type="button">운동</v-btn>
         
         
@@ -87,7 +86,7 @@
     </modal>
     
 <v-layout class="plus_location">
-    <v-btn
+    <v-btn 
       class="mx-2" fab dark color="indigo" @click="DietExercise">
       <v-icon dark>
         mdi-plus
@@ -264,6 +263,9 @@ span {
   padding:5px;
 
 }
+.v-btn{
+  color:#6478FB
+}
 
 
 .texts{
@@ -275,7 +277,12 @@ span {
   /* margin:auto; */
   display: block;
   /* left:75%; */
-  margin-left:30%;
+
+  
+  position:relative;
+  left:9%;
+  top: 80px;
+
 
 }
 </style>
