@@ -1,40 +1,41 @@
 <template>
+
   <div id="app">
     
     <TodoHeader></TodoHeader>
-    <p > 오늘 날짜 : {{today_info}} </p>
+
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
-     <!--d-day-->
-    <button @click="ddayTodo()" type="button">d-day</button>
-
-
-     <button @click="removedday()" >
+     <button class="button1" @click="removedday()" >
           <i class="addBtn fas fa-times" ></i>
       </button>
 
+      <button class="button1" @click="ddayTodo()" type="button">d-day</button>
+
      <modal v-if="ddayModify">
-       <span slot="footer" > 할 일의 마감기한을 설정해주세요.
-        <h1></h1> 
+       <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
+        <span slot="footer" >
         <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
-        <h1></h1> 
-        <input type="date" v-on:change="setdday">
+        
+        <input class="margins" type="date" v-on:change="setdday">
            <button @click="ddayModify = false" >
               <i class="addBtn fas fa-times" aria-hidden="true"></i>
            </button>
           </span>
       </modal>
 
+
        <!-- vue-chartkick 이용-->
    <bar-chart :data="chartData"  width="300" height="300" min="0" max="1"></bar-chart> <!--:data="chart"-->
    <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
 
- 
-
   <!-- 카테고리 필터링 -->
-  <button @click="clickDiet">식단</button>
-  <button @click="clickExer">운동</button>
+  <button class="button1" @click="clickExer">운동</button>
+  <button class="button1" @click="clickDiet">식단</button>
+  
+  
+  
   <!--안녕-->
   <!--식단버튼을 누르면 (true)-->
   <form class="s-form" v-if="click_diet">
@@ -79,6 +80,7 @@ import TodoInput from './components/TodoInput.vue'
 import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
 import dayjs from 'dayjs'
+
 import Modal from './components/common/AlertModal.vue'
 export default {
   name: 'app',
@@ -91,7 +93,7 @@ export default {
       option:'',
       filter_search_push:[],
       search : '',
-      today_info : dayjs().format("YYYY-MM-DD"), // 오늘 날짜
+      // today_info : dayjs().format("MM/DD"), // 오늘 날짜
       
       // 날짜를 초로 변경
       today : new Date(temp_today[0], temp_today[1], temp_today[2]).getTime(),
@@ -355,18 +357,83 @@ export default {
 
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
+
+  p{
+    position: relative;
+    font-size: 25px;
+    top:20px;
+    margin-left: 30%;
+    margin-right: 30%;
+    border-style: dashed;
+    text-align: center;
+  }
+  
+.margins{
+  margin-bottom: 10px;
+  margin-top:10px;
+}
+ 
+   /* dday_css{
+
+    position:relative;
+    top:50px;
+    background-color: rgba(249, 249, 249, 0.765);
+    color: black;
+   
+    padding: 10px;} */
+    /* border: 15px solid rgb(255, 236, 247); */
+    /* margin:0 auto; */
+   
+           
+    
+    /* chart_css{
+    position: relative;
+    top:80px;
+
+    
+    border-style: ridge;
+    border: 15px solid rgb(255, 236, 247); 
+    margin: 40px;
+           
+  }   */
+
+
   body {
+    
+    font-family: 'Do Hyeon', sans-serif;
     text-align: center;
     background-color: #F6F6F8;
   }
+  
+ 
   input {
+    font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
     width: 200px;
   }
-  button {
+  .button1 {
+    float:right; 
+    margin-right:10px;
+    display: inline;
+    font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
   }
+
+  span {
+  display: flex;
+  max-width: 100%; 
+  width: auto; 
+  display: table;
+  text-align: center;
+  
+}
   .shadow {
-    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03)
+    font-family: 'Do Hyeon', sans-serif;
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
   }
+
+
+  
 </style>

@@ -6,41 +6,42 @@
 
     <modal v-if="popup">
       <span slot="footer">식단, 운동 중 하나를 선택하세요.
-        <h1></h1>  
-        <button @click="[diet(), setDiet_Exer('식단')]" type="button">식단</button>
-        <button @click="[exer(), setDiet_Exer('운동')]" type="button">운동</button>
+         
+     
+        <v-btn class="buttons" @click="[diet(), setDiet_Exer('식단')]" type="button">식단</v-btn>
+        <v-btn class="buttons" @click="[exer(), setDiet_Exer('운동')]" type="button">운동</v-btn>
+        
+        
+        <button @click="popup = false" class="removeContainer">
+          <i class="addBtn fas fa-times" aria-hidden="true"></i>
+        </button>
+        
  
-       <button @click="popup = false" class="removeContainer">
-        <i class="addBtn fas fa-times" aria-hidden="true"></i>
-       </button>
+       
       </span>
     </modal>
   
 
 <!-- 식단 입력 부분 -->
     <modal v-if="showDiet" @close="showDiet = false">
-      <span slot="footer">
-        
+    
+      <span slot="header"> 
         <input type="text" placeholder="type" v-on:change="setItem">
-        <h1></h1> 
-        <button @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}">아침</button>
-        <button @click="[setCategory('점심'), clickCategory('점심')]" v-bind:class="{clickBtn: this.clicklaunch}">점심</button>
-        <button @click="[setCategory('저녁'), clickCategory('저녁')]" v-bind:class="{clickBtn: this.clickeven}">저녁</button>
-
+        <v-btn class="buttons" @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}">아침</v-btn>
+        <v-btn class="buttons" @click="[setCategory('점심'), clickCategory('점심')]" v-bind:class="{clickBtn: this.clicklaunch}">점심</v-btn>
+        <v-btn class="buttons" @click="[setCategory('저녁'), clickCategory('저녁')]" v-bind:class="{clickBtn: this.clickeven}">저녁</v-btn>
         
-        <h2></h2>
         
-        <button @click="[setAttribute('탄수화물'), clickAttribute('탄수화물')]"  v-bind:class="{clickBtn: this.clickcarbo}" >탄수화물</button>
-        <button @click="[setAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: this.clickprotein}">단백질</button>
-        <button @click="[setAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: this.clickfat}">지방</button>
         
-        <h6></h6>
+        <v-btn class="buttons" @click="[setAttribute('탄수화물'), clickAttribute('탄수화물')]"  v-bind:class="{clickBtn: this.clickcarbo}" >탄수화물</v-btn>
+        <v-btn class="buttons" @click="[setAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: this.clickprotein}">단백질</v-btn>
+        <v-btn class="buttons" @click="[setAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: this.clickfat}">지방</v-btn>
+        
+   
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="shadow">
-        <input type="text" placeholder="칼로리" v-on:change="setCalorie">
-        
-
-
-        <h5></h5>
+       
+        <input type="text" placeholder="칼로리" v-on:change="setCalorie" class="texts">
+    
         <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
@@ -56,18 +57,18 @@
 <!-- 운동 입력 부분 -->
       <modal v-if="showExercise" @close="showExercise = false">
       <span slot="footer">
-        <input type="text" placeholder="type" v-on:change="setItem">
-        <h1></h1> 
-        <button @click="[setCategory('유산소'), clickCategory('유산소')]" v-bind:class="{clickBtn: this.clickaero}">유산소</button>
-        <button @click="[setCategory('무산소'), clickCategory('무산소')]" v-bind:class="{clickBtn: this.clickana}">무산소</button>
-        <button @click="[setCategory('스트레칭'), clickCategory('스트레칭')]" v-bind:class="{clickBtn: this.clickstrech}">스트레칭</button>
+        <input type="text" placeholder="type" v-on:change="setItem" class="texts">
+       
+        <v-btn class="buttons" @click="[setCategory('유산소'), clickCategory('유산소')]" v-bind:class="{clickBtn: this.clickaero}">유산소</v-btn>
+        <v-btn class="buttons" @click="[setCategory('무산소'), clickCategory('무산소')]" v-bind:class="{clickBtn: this.clickana}">무산소</v-btn>
+        <v-btn class="buttons" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]" v-bind:class="{clickBtn: this.clickstrech}">스트레칭</v-btn>
 
-        <h6></h6>        
+          
         <input type="text" placeholder="횟수" v-on:change="setAmount" class="shadow">
         <input type="text" placeholder="시간" v-on:change="setCalorie">
    
-        <h5></h5>
-        <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
+   
+        <button  v-if="categorySelect" class="addContainer" v-on:click="addTodo">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </button> 
 
@@ -99,6 +100,7 @@
 
 <script>
 import Modal from './common/AlertModal.vue'
+
 export default {
   data() {
     return {
@@ -213,6 +215,15 @@ export default {
 input:focus {
   outline: none;
 }
+
+span {
+  display: flex;
+  max-width: 100%;
+  display: table;
+
+ 
+}
+
 .inputBox {
   background: white;
   height: 50px;
@@ -231,6 +242,7 @@ input:focus {
   
 }
 .removeContainer{
+  margin-top: 10px ;
   background: rgb(64, 64, 64)
 }
 .addBtn {
@@ -239,5 +251,21 @@ input:focus {
 }
 .clickBtn{
   background-color:rgb(116, 115, 115);
+}
+
+.buttons{
+  margin-top : 10px;
+  margin-right:10px;
+  margin-bottom: 5px;
+  display:inline;
+  padding:5px;
+
+}
+
+
+.texts{
+  margin-top:10px;
+  margin-bottom: 10px;
+  margin-right:10px;
 }
 </style>
