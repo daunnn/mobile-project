@@ -12,7 +12,7 @@
       scroll-target="#scrolling-techniques-6"
     >
       <v-toolbar-title>
-        <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
+        <input color='white' class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
       </v-toolbar-title>
 
       
@@ -159,6 +159,7 @@ export default {
     }
   },
   methods: {
+    
     removedday(){
       localStorage.removeItem(localStorage.key('dday_info'));
       this.showdday = false;
@@ -386,7 +387,6 @@ export default {
           this.showdday = true
         var temps = localStorage.getItem(localStorage.key(i));
         
-        // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
         this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
         this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
       }
@@ -440,6 +440,9 @@ export default {
   margin-top:10px;
 }
  
+ .stage-search{
+   color:white;
+ }
 
 
   body {
@@ -461,7 +464,7 @@ export default {
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
-    margin-top:-10px;
+   
   }
   .button2 {
     float:left;
@@ -469,7 +472,7 @@ export default {
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
-    margin-top:-10px;
+   
   }
 
   span {
