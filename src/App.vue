@@ -1,4 +1,5 @@
 <template>
+
   <div id="app">
 
     <v-card>
@@ -24,36 +25,34 @@
    
 
     <TodoHeader></TodoHeader>
-    <p > 오늘 날짜 : {{today_info}} </p>
+
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
 
-     <!--d-day-->
+     <button class="button1" @click="removedday()" >
 
-    <button @click="ddayTodo()" type="button">d-day</button>
-
-
-     <button @click="removedday()" >
           <i class="addBtn fas fa-times" ></i>
       </button>
     
 
+      <button class="button1" @click="ddayTodo()" type="button">d-day</button>
+
      <modal v-if="ddayModify">
-       <span slot="footer" > 할 일의 마감기한을 설정해주세요.
-        <h1></h1> 
+       <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
+        <span slot="footer" >
         <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
-        <h1></h1> 
-        <input type="date" v-on:change="setdday">
+        
+        <input class="margins" type="date" v-on:change="setdday">
            <button @click="ddayModify = false" >
               <i class="addBtn fas fa-times" aria-hidden="true"></i>
            </button>
           </span>
       </modal>
+
       <h1></h1>
     <div class = "bar">
        <!-- vue-chartkick 이용-->
-
       <bar-chart :data="chartData"  height="50%" min="0" max="1" :colors="[['#18254D']]">
       </bar-chart> <!--:data="chart"-->
       <bar-chart :data="chartData1" height="50%" min="0" :max="total_cal" :colors="[['#18254D']]"></bar-chart>  <!-- :data="chart1"  -->
@@ -109,6 +108,7 @@ import TodoInput from './components/TodoInput.vue'
 import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
 import dayjs from 'dayjs'
+
 import Modal from './components/common/AlertModal.vue'
 
 export default {
@@ -122,7 +122,7 @@ export default {
       option:'',
       filter_search_push:[],
       search : '',
-      today_info : dayjs().format("YYYY-MM-DD"), // 오늘 날짜
+      // today_info : dayjs().format("MM/DD"), // 오늘 날짜
       
       // 날짜를 초로 변경
       today : new Date(temp_today[0], temp_today[1], temp_today[2]).getTime(),
@@ -406,20 +406,83 @@ export default {
 
 <style>
 
+
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
+
+  p{
+    position: relative;
+    font-size: 25px;
+    top:20px;
+    margin-left: 30%;
+    margin-right: 30%;
+    border-style: dashed;
+    text-align: center;
+  }
+  
+.margins{
+  margin-bottom: 10px;
+  margin-top:10px;
+}
+ 
+   /* dday_css{
+
+    position:relative;
+    top:50px;
+    background-color: rgba(249, 249, 249, 0.765);
+    color: black;
+   
+    padding: 10px;} */
+    /* border: 15px solid rgb(255, 236, 247); */
+    /* margin:0 auto; */
+   
+           
+    
+    /* chart_css{
+    position: relative;
+    top:80px;
+
+    
+    border-style: ridge;
+    border: 15px solid rgb(255, 236, 247); 
+    margin: 40px;
+           
+  }   */
+
+
   body {
+    
+    font-family: 'Do Hyeon', sans-serif;
     text-align: center;
     background-color: rgb(236, 242, 255);
   }
+  
+ 
   input {
+    font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
     width: 200px;
   }
-  button {
+  .button1 {
+    float:right; 
+    margin-right:10px;
+    display: inline;
+    font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
   }
+
+  span {
+  display: flex;
+  max-width: 100%; 
+  width: auto; 
+  display: table;
+  text-align: center;
+  
+}
   .shadow {
-    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03)
+    font-family: 'Do Hyeon', sans-serif;
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
   }
+
   .bar{
     
     width: 85%;
