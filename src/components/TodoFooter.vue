@@ -22,6 +22,9 @@ export default {
     background-color: white;
     border-radius: 5px;
     margin: 0 auto;
+    position:relative;
+    align-content:center;
+    top:100px;
   }
   .clearAllBtn {
     color: #e20303;

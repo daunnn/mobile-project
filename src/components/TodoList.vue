@@ -196,7 +196,8 @@ export default {
     list-style-type: none;
     padding-left: 0px;
     margin-top: 0;
-    text-align: left;
+    position:relative;
+    top:80px;
   }
   
   li {
