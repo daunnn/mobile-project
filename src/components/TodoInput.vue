@@ -27,28 +27,37 @@
     
       <span slot="header"> 
         <input type="text" placeholder="type" v-on:change="setItem">
-        <v-btn class="buttons" @click="[setCategory('아침'), clickCategory('아침')]" v-bind:class="{clickBtn: this.clickbreak}">아침</v-btn>
-        <v-btn class="buttons" @click="[setCategory('점심'), clickCategory('점심')]" v-bind:class="{clickBtn: this.clicklaunch}">점심</v-btn>
-        <v-btn class="buttons" @click="[setCategory('저녁'), clickCategory('저녁')]" v-bind:class="{clickBtn: this.clickeven}">저녁</v-btn>
+
+        <v-btn class="buttons" v-if="clickbreak" color="rgb(115, 115, 115)" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
+        <v-btn class="buttons" v-if="!clickbreak" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
+
+        <v-btn class="buttons" v-if="clicklaunch" color="rgb(115, 115, 115)" @click="[setCategory('점심'), clickCategory('점심')]">점심</v-btn>
+        <v-btn class="buttons" v-if="!clicklaunch" @click="[setCategory('점심'), clickCategory('점심')]">점심</v-btn>
+
+        <v-btn class="buttons" v-if="clickeven" color="rgb(115, 115, 115)" @click="[setCategory('저녁'), clickCategory('저녁')]">저녁</v-btn>
+        <v-btn class="buttons" v-if="!clickeven" @click="[setCategory('저녁'), clickCategory('저녁')]">저녁</v-btn>
         
         
+        <v-btn class="buttons" v-if="clickcarbo" color="rgb(115, 115, 115)" @click="[setAttribute('탄수화물'), clickAttribute('탄수화물')]">탄수화물</v-btn>
+        <v-btn class="buttons" v-if="!clickcarbo" @click="[setAttribute('탄수화물'), clickAttribute('탄수화물')]" >탄수화물</v-btn>
+
+        <v-btn class="buttons" v-if="clickprotein" color="rgb(115, 115, 115)" @click="[setAttribute('단백질'), clickAttribute('단백질')]">단백질</v-btn>
+        <v-btn class="buttons" v-if="!clickprotein" @click="[setAttribute('단백질'), clickAttribute('단백질')]" >단백질</v-btn>
         
-        <v-btn class="buttons" @click="[setAttribute('탄수화물'), clickAttribute('탄수화물')]"  v-bind:class="{clickBtn: this.clickcarbo}" >탄수화물</v-btn>
-        <v-btn class="buttons" @click="[setAttribute('단백질'), clickAttribute('단백질')]"  v-bind:class="{clickBtn: this.clickprotein}">단백질</v-btn>
-        <v-btn class="buttons" @click="[setAttribute('지방'), clickAttribute('지방')]" v-bind:class="{clickBtn: this.clickfat}">지방</v-btn>
-        
+        <v-btn class="buttons" v-if="clickfat" color="rgb(115, 115, 115)" @click="[setAttribute('지방'), clickAttribute('지방')]">지방</v-btn>
+        <v-btn class="buttons" v-if="!clickfat" @click="[setAttribute('지방'), clickAttribute('지방')]" >지방</v-btn>
+
    
-        <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="shadow">
-       
+        <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="texts">     
         <input type="text" placeholder="칼로리" v-on:change="setCalorie" class="texts">
     
-        <button v-if="categorySelect" class="addContainer" v-on:click="addTodo">
+        <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
-        </button> 
+        </v-btn> 
 
-        <button @click="showDiet = false" class="removeContainer">
+        <v-btn class="buttons" @click="showDiet = false" color="rgb(115,115,115)">
           <i class="addBtn fas fa-times" aria-hidden="true"></i>
-          </button>
+        </v-btn>
       </span>
     </modal>
 
@@ -58,23 +67,29 @@
       <modal v-if="showExercise" @close="showExercise = false">
       <span slot="footer">
         <input type="text" placeholder="type" v-on:change="setItem" class="texts">
-       
-        <v-btn class="buttons" @click="[setCategory('유산소'), clickCategory('유산소')]" v-bind:class="{clickBtn: this.clickaero}">유산소</v-btn>
-        <v-btn class="buttons" @click="[setCategory('무산소'), clickCategory('무산소')]" v-bind:class="{clickBtn: this.clickana}">무산소</v-btn>
-        <v-btn class="buttons" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]" v-bind:class="{clickBtn: this.clickstrech}">스트레칭</v-btn>
+
+        
+        <v-btn class="buttons" v-if="clickaero" color="rgb(115, 115, 115)" @click="[setCategory('유산소'), clickCategory('유산소')]">유산소</v-btn>
+        <v-btn class="buttons" v-if="!clickaero" @click="[setCategory('유산소'), clickCategory('유산소')]">유산소</v-btn>
+
+        <v-btn class="buttons" v-if="clickana" color="rgb(115, 115, 115)" @click="[setCategory('무산소'), clickCategory('무산소')]">무산소</v-btn>
+        <v-btn class="buttons" v-if="!clickana" @click="[setCategory('무산소'), clickCategory('무산소')]">무산소</v-btn>
+
+        <v-btn class="buttons" v-if="clickstrech" color="rgb(115, 115, 115)" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
+        <v-btn class="buttons" v-if="!clickstrech" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
 
           
         <input type="text" placeholder="횟수" v-on:change="setAmount" class="shadow">
         <input type="text" placeholder="시간" v-on:change="setCalorie">
    
    
-        <button  v-if="categorySelect" class="addContainer" v-on:click="addTodo">
+        <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
-        </button> 
+        </v-btn> 
 
-        <button @click="showExercise = false" class="removeContainer">
+        <v-btn class="buttons" @click="showExercise = false" color="rgb(115,115,115)">
           <i class="addBtn fas fa-times" aria-hidden="true"></i>
-          </button>
+        </v-btn>
       </span>
     </modal>  
 
@@ -236,25 +251,11 @@ span {
   border-style: none;
   font-size: 0.9rem;
 }
-.addContainer {
-  
-  background: linear-gradient(to right, #6478FB, #8763FB);
-  display: inline-block;
-  width: 3rem;
-  
-}
-.removeContainer{
-  margin-top: 10px ;
-  background: rgb(64, 64, 64)
-}
+
 .addBtn {
   color: white;
   vertical-align: middle;
 }
-.clickBtn{
-  background-color:rgb(116, 115, 115);
-}
-
 
 .buttons{
   margin-top : 10px;
@@ -270,7 +271,7 @@ span {
   margin-top:10px;
   margin-bottom: 10px;
   margin-right:10px;
-
+}
 .plus_location{
   /* margin:auto; */
   display: block;
