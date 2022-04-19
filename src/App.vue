@@ -386,7 +386,6 @@ export default {
           this.showdday = true
         var temps = localStorage.getItem(localStorage.key(i));
         
-        // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
         this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
         this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
       }
