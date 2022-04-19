@@ -1,6 +1,30 @@
 <template>
   <div id="app">
+    <v-card>
+    <v-toolbar
+      :collapse="!collapseOnScroll"
+      :collapse-on-scroll="collapseOnScroll"
+      absolute style="right: 0px; "
+      dark
+      height="50px"
+      scroll-target="#scrolling-techniques-6"
+    >
+      <v-toolbar-title>
+        <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
+      </v-toolbar-title>
+
+      
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <vid class="material-icons" @click="collapseOnScroll=!collapseOnScroll">search</vid>
+
+      
+    </v-toolbar>
+    </v-card>
     
+
+
+ 
+
     <TodoHeader></TodoHeader>
     <p > 오늘 날짜 : {{today_info}} </p>
     <p v-if="showdday"> {{newwork}} 
@@ -25,11 +49,14 @@
            </button>
           </span>
       </modal>
-
+      <h1></h1>
+    <div class = "bar">
        <!-- vue-chartkick 이용-->
-   <bar-chart :data="chartData"  width="300" height="300" min="0" max="1"></bar-chart> <!--:data="chart"-->
-   <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
-
+      <bar-chart :data="chartData"  height="50%" min="0" max="1" :colors="[['#18254D']]">
+      </bar-chart> <!--:data="chart"-->
+      <bar-chart :data="chartData1" height="50%" min="0" :max="total_cal" :colors="[['#18254D']]"></bar-chart>  <!-- :data="chart1"  -->
+    </div>
+    <h1></h1>
  
 
   <!-- 카테고리 필터링 -->
@@ -61,8 +88,7 @@
     </select> <!-- {{option}}-->
   </form>
 
-   <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
-   
+
     <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
      @modifyTodo="modifyTodo"></TodoList>
    <TodoInput v-on:addTodo="addTodo"></TodoInput>
@@ -80,6 +106,7 @@ import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
 import dayjs from 'dayjs'
 import Modal from './components/common/AlertModal.vue'
+
 export default {
   name: 'app',
   
@@ -109,11 +136,14 @@ export default {
       calorie:0,
       total_cal:0,
       chartData:{
-        'percentage': 0
+        'percent': 0
       },
       chartData1:{
         'calorie': 0
-      }
+      },
+      collapseOnScroll: false,
+
+
     }
   },
   methods: {
@@ -184,7 +214,7 @@ export default {
       this.todo_per2 = this.todo_per;
       // 차트 업데이트
       this.chartData = {
-        'percentage': parseFloat(this.todo_per2)
+        'percent': parseFloat(this.todo_per2)
       }
       this.chartData1 = {
         'calorie': parseInt(this.calorie)
@@ -331,7 +361,7 @@ export default {
     }
     // 자동으로 차트 업데이트
     this.chartData = {
-        'percentage': parseFloat(this.todo_per2)
+        'percent': parseFloat(this.todo_per2)
       }
     this.chartData1 = {
         'calorie': parseInt(this.calorie)
@@ -369,4 +399,17 @@ export default {
   .shadow {
     box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03)
   }
+  .bar{
+    
+    width: 85%;
+    height: 100px;
+    border: 1px solid #dcdcdc;
+    line-height: 50%; /* 세로 가운데 정렬 : line-height와 height값을 동일하게 처리합니다.*/ 
+    text-align: center;
+    display: inline-block; /* inline-block일때에만 가운데 정렬 가능 */ 
+    padding: 10px;
+
+  }
+
+  
 </style>
