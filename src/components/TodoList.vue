@@ -213,7 +213,7 @@ export default {
     padding-left: 0px;
     margin-top: 0;
     position:relative;
-    top:80px;
+    top:50px;
   }
   
   li {
@@ -228,7 +228,7 @@ export default {
   }
   .checkBtn {
     line-height: 45px;
-    color: #62acde;
+    color: #7d37ff;
     margin-left: 10px;
     margin-right: 20px;
   }

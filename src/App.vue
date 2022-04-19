@@ -29,14 +29,12 @@
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
-
-     <button class="button1" @click="removedday()" >
+    <button class="button1" @click="ddayTodo()" type="button">d-day</button>
+     <button class="button2" @click="removedday()" >
 
           <i class="addBtn fas fa-times" ></i>
       </button>
-    
-
-      <button class="button1" @click="ddayTodo()" type="button">d-day</button>
+  
 
      <modal v-if="ddayModify">
        <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
@@ -50,21 +48,7 @@
           </span>
       </modal>
 
-      <h1></h1>
-    <div class = "bar">
-       <!-- vue-chartkick 이용-->
-      <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
-      </bar-chart> <!--:data="chart"-->
-
-      <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
-
-    </div>
-    <h1></h1>
-
-    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-    @modifyTodo="modifyTodo"></TodoList>
-
-<div data-app>
+      <div data-app>
   <v-layout class="boxOuter" align-end>
     <!-- <v-row align="end"> -->
        <!-- <v-col
@@ -93,6 +77,24 @@
     <!-- </v-row> -->
     </v-layout>
   </div>
+
+
+      <h1></h1>
+    <div class = "bar">
+       <!-- vue-chartkick 이용-->
+      <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
+      </bar-chart> <!--:data="chart"-->
+
+      <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
+
+    </div>
+    <h1></h1>
+
+    
+
+    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
+    @modifyTodo="modifyTodo"></TodoList>
+
 
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
@@ -186,6 +188,14 @@ export default {
       this.todoItems = [];
       this.temp=[];
       this.filter_search_push=[];
+
+       // 차트 업데이트
+      this.chartData = {
+        'percent': 0
+      }
+      this.chartData1 = {
+        'calorie': 0
+      }
     },
 		addTodo(todoItem, diet_exer, cate, attri, amount, calorie) {
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
@@ -376,7 +386,6 @@ export default {
           this.showdday = true
         var temps = localStorage.getItem(localStorage.key(i));
         
-        // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
         this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
         this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
       }
@@ -422,6 +431,7 @@ export default {
     margin-right: 30%;
     border-style: dashed;
     text-align: center;
+
   }
   
 .margins{
@@ -429,29 +439,6 @@ export default {
   margin-top:10px;
 }
  
-   /* dday_css{
-
-    position:relative;
-    top:50px;
-    background-color: rgba(249, 249, 249, 0.765);
-    color: black;
-   
-    padding: 10px;} */
-    /* border: 15px solid rgb(255, 236, 247); */
-    /* margin:0 auto; */
-   
-           
-    
-    /* chart_css{
-    position: relative;
-    top:80px;
-
-    
-    border-style: ridge;
-    border: 15px solid rgb(255, 236, 247); 
-    margin: 40px;
-           
-  }   */
 
 
   body {
@@ -468,11 +455,20 @@ export default {
     width: 200px;
   }
   .button1 {
-    float:right; 
-    margin-right:10px;
+    float:left; 
+    margin-left:35px;
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
+    margin-top:-10px;
+  }
+  .button2 {
+    float:left;
+    margin-left:5px; 
+    display: inline;
+    font-family: 'Do Hyeon', sans-serif;
+    border-style: groove;
+    margin-top:-10px;
   }
 
   span {
@@ -493,7 +489,7 @@ export default {
     
     font-family: 'Do Hyeon', sans-serif;
     position: relative;
-    top:50px;
+    top:10px;
 
     width: 85%;
     height: 100px;
@@ -509,9 +505,10 @@ export default {
   height: 40px;
   width: 150px;
   float:right;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
   position:relative;
-  top: 80px
+  margin-top:40px;
+  right:10px;
 }
 
 </style>
