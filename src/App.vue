@@ -31,7 +31,6 @@
 
     <button class="button1" @click="ddayTodo()" type="button">d-day</button>
      <button class="button2" @click="removedday()" >
-
           <i class="addBtn fas fa-times" ></i>
       </button>
   
@@ -41,7 +40,7 @@
         <span slot="footer" >
         <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
         
-        <input class="margins" type="date" v-on:change="setdday">
+        <input class="margin1" type="date" v-on:change="setdday">
            <button @click="ddayModify = false" >
               <i class="addBtn fas fa-times" aria-hidden="true"></i>
            </button>
@@ -436,8 +435,14 @@ export default {
   }
   
 .margins{
+  font-family: 'Do Hyeon', sans-serif;
   margin-bottom: 10px;
+  margin-left:50px;
   margin-top:10px;
+}
+.margin1{
+  margin-top: 10px;
+  margin-left:8px;
 }
  
  .stage-search{
@@ -464,6 +469,7 @@ export default {
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
+    margin-top : 4px;
    
   }
   .button2 {
@@ -472,10 +478,12 @@ export default {
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
+    margin-top : 4px;
    
   }
 
   span {
+  font-family: 'Do Hyeon', sans-serif; 
   display: flex;
   max-width: 100%; 
   width: auto; 

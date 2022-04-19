@@ -95,7 +95,7 @@
 <!-- 아무것도 입력 안했을 때 경고 부분 -->
     <modal v-if="showModal" @close="showModal = false">
       <h3 slot="header">경고</h3>
-      <span slot="footer" @click="showModal = false">할 일을 입력하세요.
+      <span class="margin" slot="footer" @click="showModal = false">할 일을 입력하세요.
         <i class="closeModalBtn fas fa-times" aria-hidden="true"></i>
       </span>
     </modal>
@@ -228,11 +228,15 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
 input:focus {
   outline: none;
 }
-
+.margin{
+  margin-left: 25%;
+}
 span {
+  font-family: 'Do Hyeon', sans-serif;
   display: flex;
   max-width: 100%;
   display: table;
@@ -247,6 +251,7 @@ span {
   border-radius: 5px;
 }
 .inputBox input {
+  font-family: 'Do Hyeon', sans-serif;
   border-style: none;
   font-size: 0.9rem;
 }
@@ -257,15 +262,13 @@ span {
 }
 
 .buttons{
+  font-family: 'Do Hyeon', sans-serif;
   margin-top : 10px;
   margin-right:10px;
   margin-bottom: 5px;
   display:inline;
   padding:5px;
 
-}
-.v-btn{
-  color:#6478FB
 }
 
 
