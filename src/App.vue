@@ -1,92 +1,108 @@
 <template>
+
   <div id="app">
-    
+
+    <v-card>
+    <v-toolbar
+      :collapse="!collapseOnScroll"
+      :collapse-on-scroll="collapseOnScroll"
+      absolute style="right: 0px; "
+      dark
+      height="50px"
+      scroll-target="#scrolling-techniques-6"
+    >
+      <v-toolbar-title>
+        <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
+      </v-toolbar-title>
+
+      
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <vid class="material-icons" @click="collapseOnScroll=!collapseOnScroll">search</vid>
+
+      
+    </v-toolbar>
+    </v-card>
+   
+
     <TodoHeader></TodoHeader>
-    <p > 오늘 날짜 : {{today_info}} </p>
+
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
-     <!--d-day-->
-    <button @click="ddayTodo()" type="button">d-day</button>
+    <button class="button1" @click="ddayTodo()" type="button">d-day</button>
+     <button class="button2" @click="removedday()" >
 
-
-     <button @click="removedday()" >
           <i class="addBtn fas fa-times" ></i>
       </button>
+  
 
      <modal v-if="ddayModify">
-       <span slot="footer" > 할 일의 마감기한을 설정해주세요.
-        <h1></h1> 
+       <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
+        <span slot="footer" >
         <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
-        <h1></h1> 
-        <input type="date" v-on:change="setdday">
+        
+        <input class="margins" type="date" v-on:change="setdday">
            <button @click="ddayModify = false" >
               <i class="addBtn fas fa-times" aria-hidden="true"></i>
            </button>
           </span>
       </modal>
 
+      <div data-app>
+  <v-layout class="boxOuter" align-end>
+    <!-- <v-row align="end"> -->
+       <!-- <v-col
+        class="d-inline"
+        cols="2"
+        sm="5"
+      >  -->
+        <v-select
+          :items="d_items"
+          v-model="option"
+          @change="filter_search"
+          label="식단"
+          dense
+          solo
+        ></v-select>
+
+        <v-select
+          :items="e_items"
+          v-model="option"
+          @change="filter_search"
+          label="운동"
+          dense
+          solo
+        ></v-select>
+      <!-- </v-col> -->
+    <!-- </v-row> -->
+    </v-layout>
+  </div>
+
+
+      <h1></h1>
+    <div class = "bar">
+       <!-- vue-chartkick 이용-->
+      <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
+      </bar-chart> <!--:data="chart"-->
+
+      <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
+
+    </div>
+    <h1></h1>
+
+    
+
+    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
+    @modifyTodo="modifyTodo"></TodoList>
+
 
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
-    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
-     @modifyTodo="modifyTodo"></TodoList>{{todo_per2}} {{calorie}} {{total_cal}}
-    <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
-/*    @modifyTodo="modifyTodo"></TodoList>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 
-  <!-- 카테고리 필터링 부분 수정중 !!!-->
-  <form class="s-form">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="식단">식단</option>
-      <option value="운동">운동</option>
-    </select> <!-- {{option}}-->
-  </form>
 
-   <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  /> */ 
-
-
- 
-
-  <!-- 카테고리 필터링 -->
-  <button @click="clickDiet">식단</button>
-  <button @click="clickExer">운동</button>
-  <!--안녕-->
-  <!--식단버튼을 누르면 (true)-->
-  <form class="s-form" v-if="click_diet">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="아침">아침</option>
-      <option value="점심">점심</option>
-      <option value="저녁">저녁</option>
-      <option value="탄수화물">탄수화물</option>
-      <option value="단백질">단백질</option>
-      <option value="지방">지방</option>
-    </select> <!-- {{option}}-->
-  </form>
-
-  <!--운동버튼을 누르면 (true)-->
-  <form class="s-form" v-if="click_exer">
-    <select v-model="option" @change="filter_search">
-      <option value="undefined">-선택-</option>
-      <option value="All">All</option>
-      <option value="유산소">유산소</option>
-      <option value="무산소">무산소</option>
-      <option value="스트레칭">스트레칭</option>
-    </select> <!-- {{option}}-->
-  </form>
-
-   <input class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
-   
-   <!-- vue-chartkick 이용-->
-   <bar-chart :data="chartData"  width="300" height="300" min="0" max="1"></bar-chart> <!--:data="chart"-->
-   <bar-chart :data="chartData1" width="300" height="300" min="0" :max="total_cal"></bar-chart> <!-- :data="chart1"  -->
-
-   
-
+    
   </div>
+
 
 </template>
 
@@ -96,7 +112,9 @@ import TodoInput from './components/TodoInput.vue'
 import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
 import dayjs from 'dayjs'
+
 import Modal from './components/common/AlertModal.vue'
+
 
 export default {
   name: 'app',
@@ -105,59 +123,49 @@ export default {
      const temp_today = dayjs().format("YYYY-MM-DD").split('-').map(str => Number(str));
      // const temp_deadline = dayjs("2022-04-13").format("YYYY-MM-DD").split('-').map(str => Number(str)); 
     return {
-
-
-
       todoItems: [], //todos
-
       option:'',
       filter_search_push:[],
       search : '',
-      today_info : dayjs().format("YYYY-MM-DD"), // 오늘 날짜
-
+      // today_info : dayjs().format("MM/DD"), // 오늘 날짜
       
       // 날짜를 초로 변경
       today : new Date(temp_today[0], temp_today[1], temp_today[2]).getTime(),
       // deadline: new Date(temp_deadline[0], temp_deadline[1], temp_deadline[2]).getTime(),
       elapsedDay: '',
-
       ddayModify: false,
       showdday:false,
-
       newdday: '',
       newwork: '',
       deadline:'',
-
-
       todo_per : 0,
       todo_per2 : 0,
-
       click_diet : false,
       click_exer : false,
-
       calorie:0,
       total_cal:0,
-
       chartData:{
-        'percentage': 1
+        'percent': 0
       },
       chartData1:{
-        'calorie': 1
-      }
+        'calorie': 0
+      },
+
+      collapseOnScroll: false,
+
+      d_items: ['All','식단','아침','점심','저녁','탄수화물','단백질','지방'],
+      e_items: ['All','운동','유산소','무산소','스트레칭']
 
     }
   },
-
   methods: {
     removedday(){
       localStorage.removeItem(localStorage.key('dday_info'));
       this.showdday = false;
-
     },
     setdday(e){
       this.newdday = e.target.value; // 입력 받은 날짜를 newdday에 할당
       const newdday_str = this.newdday.split('-').map(str => Number(str)); // 계산 format으로 변경
-
       this.deadline = new Date(newdday_str[0], newdday_str[1], newdday_str[2]).getTime(); // 초로 변경
       
           //d-day 계산
@@ -168,9 +176,7 @@ export default {
       var dday_info ={work:this.newwork, dday:this.elapsedDay};
       localStorage.setItem('dday_info',JSON.stringify(dday_info));
       
-
     },
-
     setwork(e){
      return this.newwork=e.target.value;
     },
@@ -182,9 +188,16 @@ export default {
       this.todoItems = [];
       this.temp=[];
       this.filter_search_push=[];
+
+       // 차트 업데이트
+      this.chartData = {
+        'percent': 0
+      }
+      this.chartData1 = {
+        'calorie': 0
+      }
     },
 		addTodo(todoItem, diet_exer, cate, attri, amount, calorie) {
-
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
                calorie: calorie};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
@@ -221,7 +234,7 @@ export default {
       this.todo_per2 = this.todo_per;
       // 차트 업데이트
       this.chartData = {
-        'percentage': parseFloat(this.todo_per2)
+        'percent': parseFloat(this.todo_per2)
       }
       this.chartData1 = {
         'calorie': parseInt(this.calorie)
@@ -231,60 +244,44 @@ export default {
       localStorage.setItem('calorie', parseInt(this.calorie) );
       localStorage.setItem('total_calorie', parseInt(this.total_cal) );
     },
-
-
-
     modifyTodo(todo, index, newitem, newamount, newcate, newattri, newcal){
       localStorage.removeItem(todo.item);
       
       
-
       var obj={completed: this.todoItems[index].completed, item: newitem, diet_exer:this.todoItems[index].diet_exer, 
               category:newcate, attribute: newattri, amount: newamount, calorie: newcal};
-
       this.todoItems.splice(index, 1);
       this.todoItems.push(obj);
       this.filter_search_push=this.todoItems;
       
       localStorage.setItem(newitem, JSON.stringify(obj));
     },
-
-
     filter_search(){
       var filter_search_data = [];
       this.filter_search_push=[];
-
       // 검색 기능
       for (var m = 0; m < this.todoItems.length; m++){
         if (this.todoItems[m].item.includes(this.search)) {
           filter_search_data.push(this.todoItems[m]);
         } 
-
       }this.filter_search_push=filter_search_data;
-
       // 필터 기능
-
-
       if (this.option=='아침'){
         filter_search_data = [];
         for (var i=0; i<this.todoItems.length; i++){
           if (this.todoItems[i].category.includes('아침')){
-
             filter_search_data.push(this.todoItems[i]);
         }
       }this.filter_search_push=filter_search_data;
       }
-
       else if (this.option=='점심'){
         filter_search_data = [];
         for (var j=0; j<this.todoItems.length; j++){
           if (this.todoItems[j].category.includes('점심')){
-
             filter_search_data.push(this.todoItems[j]);
         }
       }this.filter_search_push=filter_search_data;
       }
-
       else if (this.option=='저녁'){
         filter_search_data = [];
         for (var a=0; a<this.todoItems.length; a++){
@@ -340,34 +337,37 @@ export default {
             filter_search_data.push(this.todoItems[g]);
         }
       }this.filter_search_push=filter_search_data;
-      }
-
-      else if (this.option=='All'){ 
+      }else if (this.option=='식단'){
         filter_search_data = [];
-        for (var k=0; k<this.todoItems.length; k++){
-          filter_search_data.push(this.todoItems[k]);
+        for (var h=0; h<this.todoItems.length; h++){
+          if (this.todoItems[h].diet_exer.includes('식단')){
+            filter_search_data.push(this.todoItems[h]);
         }
       }this.filter_search_push=filter_search_data;
-
-
-
+      }else if (this.option=='운동'){
+        filter_search_data = [];
+        for (var k=0; k<this.todoItems.length; k++){
+          if (this.todoItems[k].diet_exer.includes('운동')){
+            filter_search_data.push(this.todoItems[k]);
+        }
+      }this.filter_search_push=filter_search_data;
+      }else if (this.option=='All'){ 
+        filter_search_data = [];
+        for (var l=0; l<this.todoItems.length; l++){
+          filter_search_data.push(this.todoItems[l]);
+        }
+      }this.filter_search_push=filter_search_data;
     },
     clickDiet(){
       this.click_diet = !this.click_diet;
     },
     clickExer(){
       this.click_exer = !this.click_exer;
-
     }
-
   },
-
-
   
   created() {
-
 		if (localStorage.length > 0) {
-
       for (var i = 0; i < localStorage.length; i++) {
         if(localStorage.key(i)=='todo 퍼센트'){
           this.todo_per2 = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -388,27 +388,23 @@ export default {
         
         // console.log(temps.substring(temps.indexOf('dday')+6,temps.length-1))
         this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
-
         this.elapsedDay = temps.substring(temps.indexOf('dday')+6,temps.length-1)
       }
      }
     }
     // 자동으로 차트 업데이트
     this.chartData = {
-        'percentage': parseFloat(this.todo_per2)
+        'percent': parseFloat(this.todo_per2)
+        
       }
     this.chartData1 = {
         'calorie': parseInt(this.calorie)
+        
       }
     /*console.log(this.todoItems)*/
-
     
    }
   },
-
-
-
-
   components: {
     'TodoHeader': TodoHeader,
     'TodoInput': TodoInput,
@@ -417,7 +413,6 @@ export default {
      Modal : Modal
   }
 }
-
 </script>
 
 
@@ -425,18 +420,96 @@ export default {
 
 
 <style>
-  body {
+
+
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
+
+  p{
+    position: relative;
+    font-size: 25px;
+    top:20px;
+    margin-left: 30%;
+    margin-right: 30%;
+    border-style: dashed;
     text-align: center;
-    background-color: #F6F6F8;
+
   }
+  
+.margins{
+  margin-bottom: 10px;
+  margin-top:10px;
+}
+ 
+
+
+  body {
+    
+    font-family: 'Do Hyeon', sans-serif;
+    text-align: center;
+    background-color: rgb(236, 242, 255);
+  }
+  
+ 
   input {
+    font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
     width: 200px;
   }
-  button {
+  .button1 {
+    float:left; 
+    margin-left:35px;
+    display: inline;
+    font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
+    margin-top:-10px;
   }
+  .button2 {
+    float:left;
+    margin-left:5px; 
+    display: inline;
+    font-family: 'Do Hyeon', sans-serif;
+    border-style: groove;
+    margin-top:-10px;
+  }
+
+  span {
+  display: flex;
+  max-width: 100%; 
+  width: auto; 
+  display: table;
+  text-align: center;
+  
+}
   .shadow {
-    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03)
+    font-family: 'Do Hyeon', sans-serif;
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
   }
+
+  .bar{
+
+    
+    font-family: 'Do Hyeon', sans-serif;
+    position: relative;
+    top:10px;
+
+    width: 85%;
+    height: 100px;
+    border: 1px solid #dcdcdc;
+    line-height: 50%; /* 세로 가운데 정렬 : line-height와 height값을 동일하게 처리합니다.*/ 
+    text-align: center;
+    display: inline-block; /* inline-block일때에만 가운데 정렬 가능 */ 
+    padding: 10px;
+
+  }
+  .boxOuter {
+  color: #7d37ff;
+  height: 40px;
+  width: 150px;
+  float:right;
+  /* margin-bottom: 30px; */
+  position:relative;
+  margin-top:40px;
+  right:10px;
+}
+
 </style>

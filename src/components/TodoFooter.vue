@@ -21,7 +21,10 @@ export default {
     line-height: 50px;
     background-color: white;
     border-radius: 5px;
-    margin: 0 auto;
+    position:absolute;
+    bottom:10px;
+    left:37%;
+    
   }
   .clearAllBtn {
     color: #e20303;
