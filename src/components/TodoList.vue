@@ -171,6 +171,7 @@ export default {
     },
     editItem(e){
       this.edititem=e.target.value;
+      this.todoItem=this.edititem;
     },
     editAmount(e){
       this.editamount=e.target.value;
