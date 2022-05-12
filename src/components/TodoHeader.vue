@@ -1,7 +1,7 @@
 <template>
   <header>
     <h3> {{today_info}} </h3>
-        <h1 style="display: inline">다이어트 TODO</h1> 
+        <h1 style="display: inline">다이어트 TODO3</h1> 
     
   </header>
 </template>

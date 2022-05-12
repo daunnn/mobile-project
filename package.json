@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --no-clean",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "vue": "^2.6.14",
     "vue-chartjs": "^4.0.5",
     "vue-chartkick": "^0.6.1",
+    "vue-router": "^3.5.3",
     "vuetify": "^2.6.0"
   },
   "devDependencies": {
