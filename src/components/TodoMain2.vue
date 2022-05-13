@@ -1,67 +1,91 @@
 <template>
  
   <div id="app">
+
+    <v-card>
+    <v-toolbar
+      :collapse="!collapseOnScroll"
+      :collapse-on-scroll="collapseOnScroll"
+      absolute style="right: 0px; "
+      dark
+      height="50px"
+      scroll-target="#scrolling-techniques-6"
+    >
+      <v-toolbar-title>
+        <input color='white' class="stage-search" type="text" v-model="search" @keyup.enter="filter_search" placeholder="검색"  />
+      </v-toolbar-title>
+
+      
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <vid class="material-icons" @click="collapseOnScroll=!collapseOnScroll">search</vid>
+
+      
+    </v-toolbar>
+    </v-card>
+
+
     <TodoHeader></TodoHeader>
 
 
-    <p v-if="showdday"> {{newwork}} 
-    D-{{elapsedDay}} </p>
 
-    <button class="button1" @click="ddayTodo()" type="button">d-day</button>
-     <button class="button2" @click="removedday()" >
-          <i class="addBtn fas fa-times" ></i>
-      </button>
-  
 
-     <modal v-if="ddayModify">
-       <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
-        <span slot="footer" >
-        <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
-        
-        <input class="margin1" type="date" v-on:change="setdday">
-           <button @click="ddayModify = false" >
-              <i class="addBtn fas fa-times" aria-hidden="true"></i>
-           </button>
-          </span>
-      </modal>
 
       <div data-app>
- 
+  <v-layout class="boxOuter" align-end>
+    <!-- <v-row align="end"> -->
+       <!-- <v-col
+        class="d-inline"
+        cols="2"
+        sm="5"
+      >  -->
+        <v-select
+          :items="d_items"
+          v-model="option"
+          @change="filter_search"
+          label="식단"
+          dense
+          solo
+        ></v-select>
+
+        <v-select
+          :items="e_items"
+          v-model="option"
+          @change="filter_search"
+          label="운동"
+          dense
+          solo
+        ></v-select>
+      <!-- </v-col> -->
+    <!-- </v-row> -->
+    </v-layout>
   </div>
-
-
-      <h1></h1>
-    <div class = "bar">
-       <!-- vue-chartkick 이용-->
-      <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
-      </bar-chart> <!--:data="chart"-->
-
-      <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
-
-    </div>
-    <h1></h1>
-
-
-    <v-layout class="plus_location">
-    <v-btn 
-      class="mx-2" fab dark color="indigo" @click="convert">
-      <v-icon dark>
-        mdi-plus
-      </v-icon>
-    </v-btn>
-  </v-layout>
     
+
+    <TodoList v-bind:propsdata="filter_search_push" @removeTodo="removeTodo" @toggleTodo="toggleTodo"
+    @modifyTodo="modifyTodo"></TodoList>
+
+
+    <TodoInput v-on:addTodo="addTodo"></TodoInput>
+    <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
+<!--
+<v-spacer></v-spacer>
+<v-btn @click=startCam> Cam </v-btn>
+
+<div id="cam"></div> -->
+
   </div>
- 
+
+
 
 </template>
 
 <script>
 import TodoHeader from './TodoHeader.vue'
-
+import TodoInput from './TodoInput.vue'
+import TodoList from './TodoList.vue'
+import TodoFooter from './TodoFooter.vue'
 import dayjs from 'dayjs'
 
-import Modal from './common/AlertModal.vue'
 
 
 export default {
@@ -107,9 +131,7 @@ export default {
     }
   },
   methods: {
-    convert(){
-        this.$router.push({path:"todo"});
-    },
+    
     removedday(){
       localStorage.removeItem(localStorage.key('dday_info'));
       this.showdday = false;
@@ -135,6 +157,7 @@ export default {
       this.ddayModify = !this.ddayModify;
     },
     clearAll() {
+      this.$router.push({path:"todo"});
       localStorage.clear();
       this.todoItems = [];
       this.temp=[];
@@ -357,9 +380,10 @@ export default {
   },
   components: {
     'TodoHeader': TodoHeader,
-
-
-     Modal : Modal
+    'TodoInput': TodoInput,
+    'TodoList': TodoList,
+    'TodoFooter': TodoFooter,
+    
   }
 }
 </script>
@@ -371,20 +395,7 @@ export default {
 <style>
 
 
-
 @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
-
-.plus_location{
-  /* margin:auto; */
-  display: block;
-  /* left:75%; */
-  position:relative;
-  top: 80px;
-  align-content: center;
-
-
-}
-
 
   p{
     position: relative;

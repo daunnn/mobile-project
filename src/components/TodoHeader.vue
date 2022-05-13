@@ -1,7 +1,9 @@
 <template>
   <header>
     <h3> {{today_info}} </h3>
-        <h1 style="display: inline">다이어트 TODO3</h1> 
+       
+          <button @click="convert_main"> 다이어트 TODO3 </button>
+
     
   </header>
 </template>
@@ -15,7 +17,13 @@ export default {
     today_info : dayjs().format("MM/DD"),
   
     }
-  }
+  },
+
+  methods: {
+    convert_main(){
+        this.$router.push({path:"main"});
+    }
+}
 }
 </script>
 
@@ -33,12 +41,14 @@ export default {
 
       }
 
-  h1 {
- 
+  button {
+    background-color: rgb(236,242,255);
+    border-color :rgb(236,242,255);
+    font-size:30;
     position: relative;
     top: 10px;
     font-weight: 900;
-    margin: 2.5rem 0 1.5rem;
+    margin: 0;
     
   }
 </style>
