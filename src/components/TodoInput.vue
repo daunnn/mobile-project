@@ -25,7 +25,7 @@
     <modal v-if="showDiet" @close="showDiet = false">
     
       <span slot="header"> 
-        <input type="text" placeholder="type" v-on:change="setItem">
+        <input type="text" placeholder="type" :value="now_message" v-on:change="setItem"> <!-- v-model="now_message" -->
 
         <v-btn class="buttons" v-if="clickbreak" color="rgb(115, 115, 115)" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
         <v-btn class="buttons" v-if="!clickbreak" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
@@ -54,9 +54,17 @@
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </v-btn> 
 
+
+        <v-spacer></v-spacer>
+        <v-btn @click=startCam> Cam </v-btn>
+        <div id="cam"></div>
+
+        <v-btn @click=saveImage> 촬영 </v-btn>
+
         <v-btn class="buttons" @click="showDiet = false" color="rgb(115,115,115)">
-          <i class="addBtn fas fa-times" aria-hidden="true"></i>
+        <i class="addBtn fas fa-times" aria-hidden="true"></i>
         </v-btn>
+
       </span>
     </modal>
 
@@ -110,19 +118,19 @@
   </v-layout>
 
 
-
   </div>
 </template>
 
 <script>
 import Modal from './common/AlertModal.vue'
+import * as tmImage from '@teachablemachine/image'
 
 export default {
   data() {
     return {
       newTodoItem: '',
       newAmount:'',
-      newCalorie:'',
+      newCalorie:0,
       diet_exer:'',
       category: '',
       attribute: '',
@@ -142,7 +150,14 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false   
+      clickfat: false,
+      
+      message:'식단 촬영',
+      now_message:'',
+
+      model:null,
+      webcam:null,
+      predicted:""
     }
   },
   methods: {
@@ -154,7 +169,8 @@ export default {
         //modal 창 삭제
         this.showDiet = false;
         this.showExercise = false;
-      } else {
+      } 
+      else {
         this.showModal = !this.showModal;
       }
     },
@@ -194,7 +210,7 @@ export default {
     clearInput() {
       this.newTodoItem = '';
       this.newAmount=' ';
-      this.newCalorie=' ';
+      this.newCalorie=0;
       this.attribute=' ';
       this.category=' ';
       },
@@ -214,12 +230,49 @@ export default {
     },
     diet(){
       this.showDiet=!this.showDiet;
-      this.popup = !this.popup;      
+      this.popup = !this.popup;     
+      this.now_message=""; 
     },
     exer(){
       this.showExercise=!this.showExercise;
       this.popup = !this.popup;      
+    },
+    saveImage(){
+      this.now_message = this.message;
+      this.newTodoItem = this.now_message;
+    },
+    async loop() {
+      this.webcam.update(); // update the webcam frame
+      await this.predict();
+      window.requestAnimationFrame(this.loop);
+    },
+    async predict() {
+      // predict can take in an image, video or canvas html element
+      let prediction = await this.model.predictTopK(
+        this.webcam.canvas,
+        1,
+        true
+      );
+      this.message = prediction[0].className;
+    },
+    async startCam() {
+      this.webcam = new tmImage.Webcam(200, 200, true);
+      await this.webcam.setup(); // request access to the webcam
+      await this.webcam.play();
+      document.getElementById("cam").appendChild(this.webcam.canvas);
+      window.requestAnimationFrame(this.loop);
     }
+  },
+  async mounted() {
+    if (localStorage.getItem("notes"))
+      this.notes = JSON.parse(localStorage.getItem("notes"));
+    let baseURL = "https://teachablemachine.withgoogle.com/models/X-b-IdQJS/";
+    this.model = await tmImage.load(
+      baseURL + "model.json",
+      baseURL + "metadata.json"
+    );
+    let maxPredictions = this.model.getTotalClasses();
+    console.log(maxPredictions);
   },
   components: {
     Modal: Modal

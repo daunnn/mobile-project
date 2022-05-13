@@ -68,10 +68,11 @@
     <TodoInput v-on:addTodo="addTodo"></TodoInput>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 <!--
-<v-spacer></v-spacer>
-<v-btn @click=startCam> Cam </v-btn>
+  <v-spacer></v-spacer>
+  <v-btn @click=startCam> Cam </v-btn>
 
-<div id="cam"></div> -->
+  <div id="cam"></div>
+  <h1> {{message}} </h1>-->
 
   </div>
 
@@ -86,6 +87,8 @@ import TodoList from './TodoList.vue'
 import TodoFooter from './TodoFooter.vue'
 import dayjs from 'dayjs'
 
+//import * as tf from '@tensorflow/tfjs'
+//import * as tmImage from '@teachablemachine/image'
 
 
 export default {
@@ -126,9 +129,15 @@ export default {
       collapseOnScroll: false,
 
       d_items: ['All','식단','아침','점심','저녁','탄수화물','단백질','지방'],
-      e_items: ['All','운동','유산소','무산소','스트레칭']
+      e_items: ['All','운동','유산소','무산소','스트레칭'],
 
-    }
+      message:'식단 촬영',
+
+      model:null,
+      webcam:null,
+      predicted:""
+
+    };
   },
   methods: {
     
@@ -337,7 +346,28 @@ export default {
     },
     clickExer(){
       this.click_exer = !this.click_exer;
-    }
+    }/*,
+    async loop() {
+      this.webcam.update(); // update the webcam frame
+      await this.predict();
+      window.requestAnimationFrame(this.loop);
+    },
+    async predict() {
+      // predict can take in an image, video or canvas html element
+      let prediction = await this.model.predictTopK(
+        this.webcam.canvas,
+        1,
+        true
+      );
+      this.message = prediction[0].className;
+    },
+    async startCam() {
+      this.webcam = new tmImage.Webcam(200, 200, true);
+      await this.webcam.setup(); // request access to the webcam
+      await this.webcam.play();
+      document.getElementById("cam").appendChild(this.webcam.canvas);
+      window.requestAnimationFrame(this.loop);
+    }*/
   },
   
   created() {
@@ -376,8 +406,21 @@ export default {
       }
     /*console.log(this.todoItems)*/
     
-   }
+   }  
   },
+  
+  /*async mounted() {
+    if (localStorage.getItem("notes"))
+      this.notes = JSON.parse(localStorage.getItem("notes"));
+    let baseURL = "https://teachablemachine.withgoogle.com/models/X-b-IdQJS/";
+    this.model = await tmImage.load(
+      baseURL + "model.json",
+      baseURL + "metadata.json"
+    );
+    let maxPredictions = this.model.getTotalClasses();
+    console.log(maxPredictions);
+  },*/
+
   components: {
     'TodoHeader': TodoHeader,
     'TodoInput': TodoInput,

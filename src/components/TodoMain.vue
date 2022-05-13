@@ -58,11 +58,15 @@
 
 <script>
 import TodoHeader from './TodoHeader.vue'
-
 import dayjs from 'dayjs'
-
 import Modal from './common/AlertModal.vue'
-
+/*
+const db = firebase.firestore();
+  db.collection('product').get().then((결과)=>{
+    결과.forEach((doc)=>{
+      console.log(doc.data())
+    })
+  })*/
 
 export default {
   name: 'app',
