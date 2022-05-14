@@ -7,7 +7,7 @@
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
-    <button class="button1" @click="ddayTodo()" type="button">d-day</button>
+    <button class="button1" @click="ddayTodo()" type="button">d-day</button> <!--@click="ddayTodo()"-->
      <button class="button2" @click="removedday()" >
           <i class="addBtn fas fa-times" ></i>
       </button>
@@ -60,21 +60,16 @@
 import TodoHeader from './TodoHeader.vue'
 import dayjs from 'dayjs'
 import Modal from './common/AlertModal.vue'
-/*
-const db = firebase.firestore();
-  db.collection('product').get().then((결과)=>{
-    결과.forEach((doc)=>{
-      console.log(doc.data())
-    })
-  })*/
+
 
 export default {
   name: 'app',
   
   data() {
-     const temp_today = dayjs().format("YYYY-MM-DD").split('-').map(str => Number(str));
+    const temp_today = dayjs().format("YYYY-MM-DD").split('-').map(str => Number(str));
      // const temp_deadline = dayjs("2022-04-13").format("YYYY-MM-DD").split('-').map(str => Number(str)); 
     return {
+
       todoItems: [], //todos
       option:'',
       filter_search_push:[],
@@ -110,7 +105,8 @@ export default {
 
     }
   },
-  methods: {
+
+  methods: {   
     convert(){
         this.$router.push({path:"todo"});
     },
@@ -322,6 +318,7 @@ export default {
   },
   
   created() {
+
 		if (localStorage.length > 0) {
       for (var i = 0; i < localStorage.length; i++) {
         if(localStorage.key(i)=='todo 퍼센트'){

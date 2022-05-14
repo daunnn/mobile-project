@@ -48,7 +48,7 @@
 
    
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="texts">     
-        <input type="text" placeholder="칼로리" v-on:change="setCalorie" class="texts">
+        <input type="text" placeholder="칼로리" v-on:change="setCalorie" :value="newCalorie" class="texts">
     
         <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
            <i class="addBtn fas fa-check" aria-hidden="true"></i>
@@ -125,9 +125,17 @@
 import Modal from './common/AlertModal.vue'
 import * as tmImage from '@teachablemachine/image'
 
+import {fb} from '../main'
+import 'firebase/firestore' 
+import 'firebase/storage'
+import { getFirestore,collection,getDocs } from 'firebase/firestore';
+
 export default {
   data() {
     return {
+
+      //calorieList:'',
+
       newTodoItem: '',
       newAmount:'',
       newCalorie:0,
@@ -181,6 +189,16 @@ export default {
       return this.newAmount=e.target.value;
     },
     setCalorie(e){
+      /*for (var i=0; i<this.calorieList.length; i++){
+        console.log(this.calorieList.key(i));
+        console.log(this.now_message);
+        console.log('---')
+        if (this.calorieList.key(i).includes(this.now_message)){
+          this.newCalorie = this.calorieList.value(i);
+          console.log(this.newCalorie);
+          console.log('!!!');
+        }
+      }*/
       return this.newCalorie=e.target.value;
     },
     setCategory(cate){      
@@ -261,7 +279,17 @@ export default {
       await this.webcam.play();
       document.getElementById("cam").appendChild(this.webcam.canvas);
       window.requestAnimationFrame(this.loop);
-    }
+    },
+    async calorie_db(){
+      const db = getFirestore(fb);
+      const calorieCol = collection(db, 'calorie');
+      const calorie_Snapshot = await getDocs(calorieCol);
+      const calorieList = calorie_Snapshot.docs.map(doc => doc.data());
+      console.log(this.calorieList);
+
+  }},
+  created(){
+      this.calorie_db();
   },
   async mounted() {
     if (localStorage.getItem("notes"))
