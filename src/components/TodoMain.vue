@@ -11,7 +11,8 @@
      <button class="button2" @click="removedday()" >
           <i class="addBtn fas fa-times" ></i>
       </button>
-  
+
+    
 
      <modal v-if="ddayModify">
        <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
@@ -27,10 +28,43 @@
 
       <div data-app>
  
-  </div>
+    </div>
+
+    <!-------------------Dday 기한 알림--------------------------->
+    <div align="center">
+      <v-alert prominent v-if="alert==true && elapsedDay<=5 && elapsedDay>0 && elapsedDay!=''" width=50%>
+        <v-row align="center"> 
+          <v-col>
+            {{newwork}}의 마감 기한까지 {{elapsedDay}}일 남았습니다.
+          </v-col>
+          <v-col class="shrink">
+           <v-btn @click="alert=false" dark>
+              <i class="addBtn fas fa-times" aria-hidden="true"></i>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-alert>
+
+      <v-alert prominent v-if="alert==true && elapsedDay==0 && elapsedDay!=''" width=50% dark>
+        <v-row align="center"> 
+          <v-col>
+            오늘은 {{newwork}}의 마감 기한일입니다.
+          </v-col>
+          <v-col class="shrink">
+           <v-btn @click="alert=false">
+              <i class="addBtn fas fa-times" aria-hidden="true"></i>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-alert>
+    </div>  
+    <!--------------------------------------------------------------->
+  
 
 
-      <h1></h1>
+
+    <!------------chart------------------>
+    <h1></h1>
     <div class = "bar">
        <!-- vue-chartkick 이용-->
       <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
@@ -40,6 +74,8 @@
 
     </div>
     <h1></h1>
+
+
 
 
     <v-layout class="plus_location">
@@ -84,6 +120,7 @@ export default {
       showdday:false,
       newdday: '',
       newwork: '',
+      alert: false,
       deadline:'',
       todo_per : 0,
       todo_per2 : 0,
@@ -126,6 +163,7 @@ export default {
       this.ddayModify = false;
       var dday_info ={work:this.newwork, dday:this.elapsedDay};
       localStorage.setItem('dday_info',JSON.stringify(dday_info));
+      this.alert=true;
       
     },
     setwork(e){
@@ -190,6 +228,7 @@ export default {
       this.chartData1 = {
         'calorie': parseInt(this.calorie)
       }
+      
       // 로컬 스토리지 저장
       localStorage.setItem('todo 퍼센트', parseFloat(this.todo_per2) );
       localStorage.setItem('calorie', parseInt(this.calorie) );
@@ -335,7 +374,8 @@ export default {
             this.filter_search_push.push(temp);       
         }else{
         if(localStorage.key(i).length>0){
-          this.showdday = true
+          this.showdday = true;
+          this.alert=true;
         var temps = localStorage.getItem(localStorage.key(i));
         
         this.newwork = temps.substring(temps.indexOf('work')+7,temps.indexOf(',')-1)
