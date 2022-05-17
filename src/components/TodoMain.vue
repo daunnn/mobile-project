@@ -1,37 +1,17 @@
 <template>
  
   <div id="app">
+    
     <TodoHeader></TodoHeader>
-
+    
 
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
-    <button class="button1" @click="ddayTodo()" type="button">d-day</button> <!--@click="ddayTodo()"-->
-     <button class="button2" @click="removedday()" >
-          <i class="addBtn fas fa-times" ></i>
-      </button>
 
-    
-
-     <modal v-if="ddayModify">
-       <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
-        <span slot="footer" >
-        <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
-        
-        <input class="margin1" type="date" v-on:change="setdday">
-           <button @click="ddayModify = false" >
-              <i class="addBtn fas fa-times" aria-hidden="true"></i>
-           </button>
-          </span>
-      </modal>
-
-      <div data-app>
- 
-    </div>
 
     <!-------------------Dday 기한 알림--------------------------->
-    <div align="center">
+    <div style="align: center;">
       <v-alert prominent v-if="alert==true && elapsedDay<=5 && elapsedDay>0 && elapsedDay!=''" width=50%>
         <v-row align="center"> 
           <v-col>
@@ -71,21 +51,49 @@
       </bar-chart> <!--:data="chart"-->
 
       <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
-
     </div>
     <h1></h1>
+    <!----------------------------------->
 
 
 
-
-    <v-layout class="plus_location">
-    <v-btn 
-      class="mx-2" fab dark color="indigo" @click="convert">
-      <v-icon dark>
-        mdi-plus
-      </v-icon>
+  <v-bottom-navigation color="teal" grow style="position: fixed; bottom: 0; width: 100%;">
+    <v-btn @click="ddayModal=true">
+      <span>D-day</span>
+      <v-icon>mdi-history</v-icon>
     </v-btn>
-  </v-layout>
+    <v-btn @click="convert()">
+      <span>Add List</span>
+      <v-icon>fas fa-list</v-icon>
+    </v-btn>
+    <v-btn @click="SetcalLimit()"><!--여기에 칼로리 제한 작성하는 modal 생성-->
+      <span>Calorie Limit</span>
+      <v-icon>mdi-cancel</v-icon>
+    </v-btn>
+  </v-bottom-navigation>
+
+  <modal v-if="ddayModal">
+    <span slot="footer">
+      <v-btn @click="ddayTodo()" color="rgb(179, 179, 179)" class="button1">입력</v-btn>
+      <v-btn @click="removedday()" color="rgb(255, 175, 183)" class="button2">초기화</v-btn>
+      <button @click="ddayModal = false" class="button2">
+        <i class="addBtn fas fa-times" aria-hidden="true"></i>
+      </button>
+    </span>
+  </modal>
+
+
+  <modal v-if="ddayModify">
+    <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
+    <span slot="footer" >
+    <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
+        
+    <input class="margin1" type="date" v-on:change="setdday">
+        <button @click="[ddayModify = false, ddayModal=false]" >
+          <i class="addBtn fas fa-times" aria-hidden="true"></i>
+        </button>
+      </span>
+  </modal>
     
   </div>
  
@@ -134,11 +142,13 @@ export default {
       chartData1:{
         'calorie': 0
       },
-
+      
       collapseOnScroll: false,
 
       d_items: ['All','식단','아침','점심','저녁','탄수화물','단백질','지방'],
-      e_items: ['All','운동','유산소','무산소','스트레칭']
+      e_items: ['All','운동','유산소','무산소','스트레칭'],
+
+      ddayModal: false
 
     }
   },
@@ -150,6 +160,7 @@ export default {
     removedday(){
       localStorage.removeItem(localStorage.key('dday_info'));
       this.showdday = false;
+      this.ddayModal=false;
     },
     setdday(e){
       this.newdday = e.target.value; // 입력 받은 날짜를 newdday에 할당
@@ -157,11 +168,12 @@ export default {
       this.deadline = new Date(newdday_str[0], newdday_str[1], newdday_str[2]).getTime(); // 초로 변경
       
           //d-day 계산
-       const elapsedMSec = this.deadline - this.today;
-       this.elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
+      const elapsedMSec = this.deadline - this.today;
+      this.elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
       this.showdday = true;
       this.ddayModify = false;
       var dday_info ={work:this.newwork, dday:this.elapsedDay};
+      this.ddayModal=false;
       localStorage.setItem('dday_info',JSON.stringify(dday_info));
       this.alert=true;
       
@@ -172,6 +184,7 @@ export default {
     ddayTodo(){
       this.ddayModify = !this.ddayModify;
     },
+    
     clearAll() {
       localStorage.clear();
       this.todoItems = [];
@@ -229,6 +242,11 @@ export default {
         'calorie': parseInt(this.calorie)
       }
       
+      
+
+
+
+
       // 로컬 스토리지 저장
       localStorage.setItem('todo 퍼센트', parseFloat(this.todo_per2) );
       localStorage.setItem('calorie', parseInt(this.calorie) );
@@ -426,17 +444,6 @@ export default {
 
 }
 
-
-  p{
-    position: relative;
-    font-size: 25px;
-    top:20px;
-    margin-left: 30%;
-    margin-right: 30%;
-    border-style: dashed;
-    text-align: center;
-
-  }
   
 .margins{
   font-family: 'Do Hyeon', sans-serif;
@@ -472,7 +479,6 @@ export default {
     margin-left:35px;
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
-    border-style: groove;
     margin-top : 4px;
    
   }
@@ -485,6 +491,7 @@ export default {
     margin-top : 4px;
    
   }
+  
 
   span {
   font-family: 'Do Hyeon', sans-serif; 

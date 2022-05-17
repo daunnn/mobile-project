@@ -26,7 +26,7 @@
 
     <TodoHeader></TodoHeader>
 
-
+  
 
 
 
@@ -65,7 +65,7 @@
     @modifyTodo="modifyTodo"></TodoList>
 
 
-    <TodoInput v-on:addTodo="addTodo"></TodoInput>
+    <TodoInput @addTodo="addTodo" @addTodoDiet="addTodoDiet"></TodoInput>
     <TodoFooter v-on:removeAll="clearAll"></TodoFooter>
 <!--
   <v-spacer></v-spacer>
@@ -126,6 +126,7 @@ export default {
       chartData1:{
         'calorie': 0
       },
+      calorie_limit : 1000,
 
       collapseOnScroll: false,
 
@@ -183,11 +184,19 @@ export default {
     },
 		addTodo(todoItem, diet_exer, cate, attri, amount, calorie) {
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
-               calorie: calorie};
+               calorie: calorie, geoloca: ''};
 			localStorage.setItem(todoItem, JSON.stringify(obj));
 			this.todoItems.push(obj);
       this.filter_search_push=this.todoItems;
 		},
+    addTodoDiet(todoItem, diet_exer, cate, attri, amount, calorie, geoloca){
+      var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
+               calorie: calorie, geoloca: geoloca};
+      localStorage.setItem(todoItem, JSON.stringify(obj));
+			this.todoItems.push(obj);
+      this.filter_search_push=this.todoItems;
+    },
+
     removeTodo(todo, index) {
       localStorage.removeItem(todo.item);
       this.todoItems.splice(index, 1);
@@ -223,6 +232,13 @@ export default {
       this.chartData1 = {
         'calorie': parseInt(this.calorie)
       }
+      
+      //calorie limit 넘으면 진동
+      if (this.calorie>this.calorie_limit && this.todoItems[index].diet_exer=='식단'){        
+        navigator.vibrate([2000,500,2000,500]);
+        console.log(this.calorie);
+      }
+
       // 로컬 스토리지 저장
       localStorage.setItem('todo 퍼센트', parseFloat(this.todo_per2) );
       localStorage.setItem('calorie', parseInt(this.calorie) );

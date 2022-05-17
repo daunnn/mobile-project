@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div>
 
   <!-- <button @click="DietExercise">Click to add list</button> -->
@@ -51,7 +51,7 @@
         <input type="text" placeholder="칼로리" v-on:change="setCalorie" :value="newCalorie" class="texts">
     
         <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
-           <i class="addBtn fas fa-check" aria-hidden="true"></i>
+          <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </v-btn> 
 
 
@@ -85,13 +85,13 @@
         <v-btn class="buttons" v-if="clickstrech" color="rgb(115, 115, 115)" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
         <v-btn class="buttons" v-if="!clickstrech" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
 
-          
+    
         <input type="text" placeholder="횟수" v-on:change="setAmount" class="shadow">
         <input type="text" placeholder="시간" v-on:change="setCalorie">
-   
-   
+  
+  
         <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
-           <i class="addBtn fas fa-check" aria-hidden="true"></i>
+          <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </v-btn> 
 
         <v-btn class="buttons" @click="showExercise = false" color="rgb(115,115,115)">
@@ -122,6 +122,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import Modal from './common/AlertModal.vue'
 import * as tmImage from '@teachablemachine/image'
 
@@ -134,7 +135,7 @@ export default {
   data() {
     return {
 
-      //calorieList:'',
+      calorieList:'',
 
       newTodoItem: '',
       newAmount:'',
@@ -172,12 +173,19 @@ export default {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
-        this.clearInput();
+        if (this.diet_exer=='식단'){
+          navigator.geolocation.getCurrentPosition(location=>{this.geoloca=location.coords.longitude+"&"+location.coords.latitude;})
+          this.$emit('addTodoDiet', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie, this.geoloca);
+          this.clearInput();
+        }
+        else{
+				  this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
+          this.clearInput();
+        }
         //modal 창 삭제
         this.showDiet = false;
         this.showExercise = false;
-      } 
+      }
       else {
         this.showModal = !this.showModal;
       }
@@ -189,7 +197,7 @@ export default {
       return this.newAmount=e.target.value;
     },
     setCalorie(e){
-      /*for (var i=0; i<this.calorieList.length; i++){
+      for (var i=0; i<this.calorieList.length; i++){
         console.log(this.calorieList.key(i));
         console.log(this.now_message);
         console.log('---')
@@ -198,7 +206,7 @@ export default {
           console.log(this.newCalorie);
           console.log('!!!');
         }
-      }*/
+      }
       return this.newCalorie=e.target.value;
     },
     setCategory(cate){      
@@ -259,6 +267,7 @@ export default {
       this.now_message = this.message;
       this.newTodoItem = this.now_message;
     },
+    
     async loop() {
       this.webcam.update(); // update the webcam frame
       await this.predict();
@@ -284,7 +293,7 @@ export default {
       const db = getFirestore(fb);
       const calorieCol = collection(db, 'calorie');
       const calorie_Snapshot = await getDocs(calorieCol);
-      const calorieList = calorie_Snapshot.docs.map(doc => doc.data());
+      const calorieList = calorie_Snapshot.docs.map(doc => doc.data()); //eslint-disable-line no-unused-vars
       console.log(this.calorieList);
 
   }},
