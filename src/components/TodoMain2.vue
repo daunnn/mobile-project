@@ -126,7 +126,7 @@ export default {
       chartData1:{
         'calorie': 0
       },
-      calorie_limit : 1000,
+      calorie_limit : 0,
 
       collapseOnScroll: false,
 
@@ -216,7 +216,7 @@ export default {
           if (this.todoItems[i].completed == true){
             count = count + 1;
           }
-          if (this.todoItems[i].diet_exer.includes('식단')){
+          if (this.todoItems[i].diet_exer=="식단"){
             this.total_cal = this.total_cal + parseInt(this.todoItems[i].calorie);
             if (this.todoItems[i].completed == true){
               this.calorie = this.calorie + parseInt(this.todoItems[i].calorie);
@@ -402,7 +402,10 @@ export default {
             var temp =JSON.parse(localStorage.getItem(localStorage.key(i)));
             this.todoItems.push(temp);
             this.filter_search_push.push(temp);       
-        }else{
+        }else if(localStorage.key(i) == 'calorieLimit'){
+          this.calorie_limit=JSON.parse(localStorage.getItem(localStorage.key(i)));
+        }
+        else{
         if(localStorage.key(i).length>0){
           this.showdday = true
         var temps = localStorage.getItem(localStorage.key(i));
@@ -458,11 +461,12 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
 
   p{
-    position: relative;
+    position: fixed;
     font-size: 25px;
-    top:20px;
-    margin-left: 30%;
-    margin-right: 30%;
+    top:50px;
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
     border-style: dashed;
     text-align: center;
 

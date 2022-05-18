@@ -1,19 +1,15 @@
-<template>
- 
+<template> 
   <div id="app">
     
     <TodoHeader></TodoHeader>
-    
 
     <p v-if="showdday"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
-
-
     <!-------------------Dday 기한 알림--------------------------->
-    <div style="align: center;">
-      <v-alert prominent v-if="alert==true && elapsedDay<=5 && elapsedDay>0 && elapsedDay!=''" width=50%>
-        <v-row align="center"> 
+    <div style="position:relative; top: 40px; z-index: 4">
+      <v-alert prominent v-if="alert==true && elapsedDay<=5 && elapsedDay>0 && elapsedDay!=''" color="rgb(191,193,255)">
+        <v-row > 
           <v-col>
             {{newwork}}의 마감 기한까지 {{elapsedDay}}일 남았습니다.
           </v-col>
@@ -45,13 +41,15 @@
 
     <!------------chart------------------>
     <h1></h1>
+    <v-card style="position: fixed; margin-left: 5%; content-align: center; top:120px; width: 90%; height: 140px;">
     <div class = "bar">
        <!-- vue-chartkick 이용-->
-      <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#a768ff']]">
+      <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#9f86db']]">
       </bar-chart> <!--:data="chart"-->
 
-      <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#a768ff']]"></bar-chart>  <!-- :data="chart1"  -->
+      <bar-chart :data="chartData1" points="false" height="75%" min="0" :max="total_cal" :colors="[['#9f86db']]"></bar-chart>  <!-- :data="chart1"  -->
     </div>
+    </v-card>
     <h1></h1>
     <!----------------------------------->
 
@@ -66,13 +64,13 @@
       <span>Add List</span>
       <v-icon>fas fa-list</v-icon>
     </v-btn>
-    <v-btn @click="SetcalLimit()"><!--여기에 칼로리 제한 작성하는 modal 생성-->
+    <v-btn @click="calLimit=true">
       <span>Calorie Limit</span>
       <v-icon>mdi-cancel</v-icon>
     </v-btn>
   </v-bottom-navigation>
 
-  <modal v-if="ddayModal">
+  <modal v-if="ddayModal" @close="ddayModal=false">
     <span slot="footer">
       <v-btn @click="ddayTodo()" color="rgb(179, 179, 179)" class="button1">입력</v-btn>
       <v-btn @click="removedday()" color="rgb(255, 175, 183)" class="button2">초기화</v-btn>
@@ -82,8 +80,7 @@
     </span>
   </modal>
 
-
-  <modal v-if="ddayModify">
+  <modal v-if="ddayModify" @close="ddayModal=false">
     <span class="margins" slot="header" > 마감기한을 설정해주세요. </span>
     <span slot="footer" >
     <input type="text" placeholder="할 일" v-on:change="setwork" class="shadow"> 
@@ -94,7 +91,16 @@
         </button>
       </span>
   </modal>
-    
+
+  <!--칼로리 제한 작성하는 modal 생성-->
+  <modal v-if="calLimit" @close="calLimit=false">
+    <span slot="footer">
+      <input type="text" placeholder="일일 칼로리 한도를 입력하세요." @change="setcalLimit" @keyup.enter="calLimit=false" class="button2">
+      <button @click="calLimit = false" class="button2">
+          <i class="addBtn fas fa-times" aria-hidden="true"></i>
+      </button>
+    </span>
+  </modal>
   </div>
  
 
@@ -148,7 +154,9 @@ export default {
       d_items: ['All','식단','아침','점심','저녁','탄수화물','단백질','지방'],
       e_items: ['All','운동','유산소','무산소','스트레칭'],
 
-      ddayModal: false
+      ddayModal: false,
+      calLimit: false,
+      calorie_limit: ''
 
     }
   },
@@ -183,6 +191,11 @@ export default {
     },
     ddayTodo(){
       this.ddayModify = !this.ddayModify;
+    },
+    //calorie limit 생성하는 method
+    setcalLimit(e){
+      this.calorie_limit=e.target.value;
+      localStorage.setItem('calorieLimit',JSON.stringify(this.calorie_limit));
     },
     
     clearAll() {
@@ -484,7 +497,7 @@ export default {
   }
   .button2 {
     float:left;
-    margin-left:5px; 
+    margin-left:3px; 
     display: inline;
     font-family: 'Do Hyeon', sans-serif;
     border-style: groove;
