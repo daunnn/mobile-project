@@ -49,6 +49,8 @@
    
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="texts">     
         <input type="text" placeholder="칼로리" v-on:change="setCalorie" :value="newCalorie" class="texts">
+
+        <v-btn class="buttons" @click="calorie_db()" >칼로리 계산</v-btn>
     
         <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
           <i class="addBtn fas fa-check" aria-hidden="true"></i>
@@ -110,7 +112,7 @@
     
 <v-layout class="plus_location">
     <v-btn 
-      class="mx-2" fab dark color="indigo" @click="DietExercise">
+      class="mx-2" fab dark color="indigo" @click="DietExercise()">
       <v-icon dark>
         mdi-plus
       </v-icon>
@@ -135,7 +137,7 @@ export default {
   data() {
     return {
 
-      calorieList:'',
+      //calorieList:'', 
 
       newTodoItem: '',
       newAmount:'',
@@ -194,19 +196,10 @@ export default {
       return this.newTodoItem=e.target.value;
     },
     setAmount(e){
+      //this.calorie_db();
       return this.newAmount=e.target.value;
     },
     setCalorie(e){
-      for (var i=0; i<this.calorieList.length; i++){
-        console.log(this.calorieList.key(i));
-        console.log(this.now_message);
-        console.log('---')
-        if (this.calorieList.key(i).includes(this.now_message)){
-          this.newCalorie = this.calorieList.value(i);
-          console.log(this.newCalorie);
-          console.log('!!!');
-        }
-      }
       return this.newCalorie=e.target.value;
     },
     setCategory(cate){      
@@ -252,12 +245,13 @@ export default {
       this.categorySelect=false;
       this.clickcarbo = false;
       this.clickprotein = false;
-      this.clickfat =false;     
+      this.clickfat =false;   
     },
     diet(){
       this.showDiet=!this.showDiet;
       this.popup = !this.popup;     
       this.now_message=""; 
+      this.newCalorie=0;
     },
     exer(){
       this.showExercise=!this.showExercise;
@@ -266,6 +260,7 @@ export default {
     saveImage(){
       this.now_message = this.message;
       this.newTodoItem = this.now_message;
+      //calorie_db();
     },
     
     async loop() {
@@ -294,12 +289,27 @@ export default {
       const calorieCol = collection(db, 'calorie');
       const calorie_Snapshot = await getDocs(calorieCol);
       const calorieList = calorie_Snapshot.docs.map(doc => doc.data()); //eslint-disable-line no-unused-vars
-      console.log(this.calorieList);
+      console.log(calorieList);
+
+      //for (var idx,calList in calorieList){
+      for (var i=0; i<calorieList.length; i++) {
+        console.log(calorieList[i]);
+      
+        console.log(calorieList[i].name);
+        console.log(calorieList[i].cal);
+        console.log(this.now_message);
+        console.log('---');
+
+        if (calorieList[i].name.includes(this.now_message)){
+            this.newCalorie = (calorieList[i].cal) * (this.newAmount);
+            console.log(this.newCalorie);
+            console.log('!!!');
+        }
+      }
+      
 
   }},
-  created(){
-      this.calorie_db();
-  },
+
   async mounted() {
     if (localStorage.getItem("notes"))
       this.notes = JSON.parse(localStorage.getItem("notes"));
