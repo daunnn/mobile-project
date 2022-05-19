@@ -1,7 +1,10 @@
 <template>
   <header>
-    <h3> {{today_info}} </h3>
-        <h1 style="display: inline">다이어트 TODO</h1> 
+    <v-tool-bar @click="convert_main" color=rgb(236,242,255)>
+      <div style="float: left; margin: 15px; position: fixed; "> {{today_info}} </div>
+      <div style ="font-weight:bold; content-align: center; font-size: 25px; top:5px; position: fixed; left: 50%; transform: translateX(-50%);"> 다이어트 ToDo </div>
+    </v-tool-bar>
+
     
   </header>
 </template>
@@ -15,12 +18,18 @@ export default {
     today_info : dayjs().format("MM/DD"),
   
     }
-  }
+  },
+
+  methods: {
+    convert_main(){
+        this.$router.push({path:"main"});
+    }
+}
 }
 </script>
 
 <style scoped>
- h3 {
+  h3 {
       position: absolute;
       top: 10px;
       left: 0;
@@ -33,12 +42,14 @@ export default {
 
       }
 
-  h1 {
- 
+  button {
+    background-color: rgb(236,242,255);
+    border-color :rgb(236,242,255);
+    font-size:30;
     position: relative;
     top: 10px;
     font-weight: 900;
-    margin: 2.5rem 0 1.5rem;
+    margin: 0;
     
   }
 </style>

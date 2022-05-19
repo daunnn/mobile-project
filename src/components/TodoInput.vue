@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div>
 
   <!-- <button @click="DietExercise">Click to add list</button> -->
@@ -25,7 +25,7 @@
     <modal v-if="showDiet" @close="showDiet = false">
     
       <span slot="header"> 
-        <input type="text" placeholder="type" v-on:change="setItem">
+        <input type="text" placeholder="type" :value="now_message" v-on:change="setItem"> <!-- v-model="now_message" -->
 
         <v-btn class="buttons" v-if="clickbreak" color="rgb(115, 115, 115)" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
         <v-btn class="buttons" v-if="!clickbreak" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
@@ -48,15 +48,26 @@
 
    
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="texts">     
-        <input type="text" placeholder="칼로리" v-on:change="setCalorie" class="texts">
+        <input type="text" placeholder="칼로리" v-on:change="setCalorie" :value="newCalorie" class="texts">
+
+        <v-btn class="buttons" @click="calorie_db()" >칼로리 계산</v-btn>
     
         <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
-           <i class="addBtn fas fa-check" aria-hidden="true"></i>
+          <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </v-btn> 
 
+
+        <v-spacer></v-spacer>
+        
+        <v-btn @click=startCam> Cam </v-btn>
+        <div id="cam"></div>
+
+        <v-btn @click=saveImage> 촬영 </v-btn>
+
         <v-btn class="buttons" @click="showDiet = false" color="rgb(115,115,115)">
-          <i class="addBtn fas fa-times" aria-hidden="true"></i>
+        <i class="addBtn fas fa-times" aria-hidden="true"></i>
         </v-btn>
+
       </span>
     </modal>
 
@@ -77,13 +88,13 @@
         <v-btn class="buttons" v-if="clickstrech" color="rgb(115, 115, 115)" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
         <v-btn class="buttons" v-if="!clickstrech" @click="[setCategory('스트레칭'), clickCategory('스트레칭')]">스트레칭</v-btn>
 
-          
+    
         <input type="text" placeholder="횟수" v-on:change="setAmount" class="shadow">
         <input type="text" placeholder="시간" v-on:change="setCalorie">
-   
-   
+  
+  
         <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
-           <i class="addBtn fas fa-check" aria-hidden="true"></i>
+          <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </v-btn> 
 
         <v-btn class="buttons" @click="showExercise = false" color="rgb(115,115,115)">
@@ -95,14 +106,15 @@
 <!-- 아무것도 입력 안했을 때 경고 부분 -->
     <modal v-if="showModal" @close="showModal = false">
       <h3 slot="header">경고</h3>
-      <span slot="footer" @click="showModal = false">할 일을 입력하세요.
+      <span class="margin" slot="footer" @click="showModal = false">할 일을 입력하세요.
         <i class="closeModalBtn fas fa-times" aria-hidden="true"></i>
       </span>
     </modal>
     
 <v-layout class="plus_location">
     <v-btn 
-      class="mx-2" fab dark color="indigo" @click="DietExercise">
+
+      class="mx-2" dark color="indigo" @click="DietExercise">
       <v-icon dark>
         mdi-plus
       </v-icon>
@@ -110,19 +122,28 @@
   </v-layout>
 
 
-
   </div>
 </template>
 
 <script>
+/* eslint-disable */
 import Modal from './common/AlertModal.vue'
+import * as tmImage from '@teachablemachine/image'
+
+import {fb} from '../main'
+import 'firebase/firestore' 
+import 'firebase/storage'
+import { getFirestore,collection,getDocs } from 'firebase/firestore';
 
 export default {
   data() {
     return {
+
+      //calorieList:'', 
+
       newTodoItem: '',
       newAmount:'',
-      newCalorie:'',
+      newCalorie:0,
       diet_exer:'',
       category: '',
       attribute: '',
@@ -142,19 +163,34 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false   
+      clickfat: false,
+      
+      message:'식단 촬영',
+      now_message:'',
+
+      model:null,
+      webcam:null,
+      predicted:""
     }
   },
   methods: {
     addTodo() {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
-				this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
-        this.clearInput();
+        if (this.diet_exer=='식단'){
+          
+          this.$emit('addTodoDiet', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
+          this.clearInput();
+        }
+        else{
+				  this.$emit('addTodo', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
+          this.clearInput();
+        }
         //modal 창 삭제
         this.showDiet = false;
         this.showExercise = false;
-      } else {
+      }
+      else {
         this.showModal = !this.showModal;
       }
     },
@@ -162,6 +198,7 @@ export default {
       return this.newTodoItem=e.target.value;
     },
     setAmount(e){
+      //this.calorie_db();
       return this.newAmount=e.target.value;
     },
     setCalorie(e){
@@ -194,7 +231,7 @@ export default {
     clearInput() {
       this.newTodoItem = '';
       this.newAmount=' ';
-      this.newCalorie=' ';
+      this.newCalorie=0;
       this.attribute=' ';
       this.category=' ';
       },
@@ -210,16 +247,81 @@ export default {
       this.categorySelect=false;
       this.clickcarbo = false;
       this.clickprotein = false;
-      this.clickfat =false;     
+      this.clickfat =false;   
     },
     diet(){
       this.showDiet=!this.showDiet;
-      this.popup = !this.popup;      
+      this.popup = !this.popup;     
+      this.now_message=""; 
+      this.newCalorie=0;
     },
     exer(){
       this.showExercise=!this.showExercise;
       this.popup = !this.popup;      
-    }
+    },
+    saveImage(){
+      this.now_message = this.message;
+      this.newTodoItem = this.now_message;
+      //calorie_db();
+    },
+    
+    async loop() {
+      this.webcam.update(); // update the webcam frame
+      await this.predict();
+      window.requestAnimationFrame(this.loop);
+    },
+    async predict() {
+      // predict can take in an image, video or canvas html element
+      let prediction = await this.model.predictTopK(
+        this.webcam.canvas,
+        1,
+        true
+      );
+      this.message = prediction[0].className;
+    },
+    async startCam() {
+      this.webcam = new tmImage.Webcam(200, 200, true);
+      await this.webcam.setup(); // request access to the webcam
+      await this.webcam.play();
+      document.getElementById("cam").appendChild(this.webcam.canvas);
+      window.requestAnimationFrame(this.loop);
+    },
+    async calorie_db(){
+      const db = getFirestore(fb);
+      const calorieCol = collection(db, 'calorie');
+      const calorie_Snapshot = await getDocs(calorieCol);
+      const calorieList = calorie_Snapshot.docs.map(doc => doc.data()); //eslint-disable-line no-unused-vars
+      console.log(calorieList);
+
+      //for (var idx,calList in calorieList){
+      for (var i=0; i<calorieList.length; i++) {
+        console.log(calorieList[i]);
+      
+        console.log(calorieList[i].name);
+        console.log(calorieList[i].cal);
+        console.log(this.now_message);
+        console.log('---');
+
+        if (calorieList[i].name.includes(this.now_message)){
+            this.newCalorie = (calorieList[i].cal) * (this.newAmount);
+            console.log(this.newCalorie);
+            console.log('!!!');
+        }
+      }
+      
+
+  }},
+
+  async mounted() {
+    if (localStorage.getItem("notes"))
+      this.notes = JSON.parse(localStorage.getItem("notes"));
+    let baseURL = "https://teachablemachine.withgoogle.com/models/X-b-IdQJS/";
+    this.model = await tmImage.load(
+      baseURL + "model.json",
+      baseURL + "metadata.json"
+    );
+    let maxPredictions = this.model.getTotalClasses();
+    console.log(maxPredictions);
   },
   components: {
     Modal: Modal
@@ -228,11 +330,15 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Poor+Story&display=swap');
 input:focus {
   outline: none;
 }
-
+.margin{
+  margin-left: 25%;
+}
 span {
+  font-family: 'Do Hyeon', sans-serif;
   display: flex;
   max-width: 100%;
   display: table;
@@ -247,6 +353,7 @@ span {
   border-radius: 5px;
 }
 .inputBox input {
+  font-family: 'Do Hyeon', sans-serif;
   border-style: none;
   font-size: 0.9rem;
 }
@@ -257,15 +364,13 @@ span {
 }
 
 .buttons{
+  font-family: 'Do Hyeon', sans-serif;
   margin-top : 10px;
   margin-right:10px;
   margin-bottom: 5px;
   display:inline;
   padding:5px;
 
-}
-.v-btn{
-  color:#6478FB
 }
 
 
@@ -275,11 +380,11 @@ span {
   margin-right:10px;
 }
 .plus_location{
-  /* margin:auto; */
-  display: block;
-  /* left:75%; */
-  position:relative;
-  top: 80px;
+  
+  display: block; 
+  position:fixed;
+  top: 53px;
+  left: 10px;  
   align-content: center;
 
 

@@ -1,21 +1,46 @@
 <template>
   <section>
-    <transition-group name="list" tag="ul">
+    <v-card class="mx-auto" style="top:100px; width:90%; margin-left:5%" v-if="propsdata.length>0">
+      <v-list two-line>
+        <v-list-item-group v-model="completed" active-class="dark" multiple>
+          <template v-for="(todo, index) in propsdata">
+            <v-list-item :key="todo.item">
+              <template>
 
-      <li v-for="(todo, index) in propsdata" v-bind:key="todo.item" class="shadow">
-        <i class="checkBtn fas fa-check" @click="toggleTodo(todo, index)" v-bind:class="{checkBtnCompleted: todo.completed}" aria-hidden="true"></i>
-        <span @click="toggleTodo(todo, index)" v-bind:class="{textCompleted: todo.completed}"> 
-          {{ todo.category }}      {{todo.item}}
-        </span>
+                <!--완료 체크 btn-->
+                <v-list-item-action>
+                  <v-icon v-if="todo.completed==false" color="grey lighten-1" @click="toggleTodo(todo, index)">mdi-check</v-icon>
+                  <v-icon v-else color="yellow darken-3" @click="toggleTodo(todo, index)">mdi-check</v-icon>
+                </v-list-item-action>
 
+                <!--내용-->
+                <v-list-item-content>
+                  
+                  <v-list-item-title style="font-size: 18px" v-bind:class="{textCompleted: todo.completed}" v-text="todo.item" @click="toggleTodo(todo, index)"></v-list-item-title>
 
-        <!--=================수정======================-->
+                  <v-list-item-subtitle style="font-size: 14px" class="text--primary" v-text="todo.category" @click="toggleTodo(todo, index)">
+                  </v-list-item-subtitle>
 
-        <span class="updateBtn" type="button" @click="edit(todo, index)">
-          <i class="fas fa-pencil-alt" aria-hidden="true"></i> 
-        </span>
+                  <v-list-item-subtitle style="font-size: 13px" v-text="todo.geoloca"></v-list-item-subtitle>
+                </v-list-item-content>
 
-        <modal v-if="showModify">
+                
+                <!--수정 btn-->
+                <v-icon @click="edit(todo, index)" color="grey lighten-1" style="margin-right:10px">mdi-pencil</v-icon>
+                
+                <!--삭제 btn-->
+                <v-icon @click="removeTodo(todo, index)" color="grey lighten-1">mdi-delete</v-icon>
+                
+              </template>
+            </v-list-item>        
+            <v-divider v-if="index<propsdata.length -1" :key="index"></v-divider>
+          </template>
+        </v-list-item-group>
+      </v-list>
+    </v-card>
+
+    <!--입력 모달창-->
+     <modal v-if="showModify">
           <span slot ="header">
 
             <!--식단-->
@@ -83,18 +108,14 @@
           </span>
         </modal>
 
-        <!--삭제-->
-        <span class="removeBtn" type="button" @click="removeTodo(todo, index)">
-          <i class="far fa-trash-alt" aria-hidden="true"></i>
-        </span>
-      </li>
-    </transition-group>
+        
   </section>
 </template>
 
 
 <script>
 import Modal from './common/AlertModal.vue'
+import axios from 'axios';
 export default {
   data(){
     return{
@@ -124,7 +145,9 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false
+      clickfat: false,
+
+      geoloca: ''
     }
   },
   props: ['propsdata'],
@@ -132,8 +155,20 @@ export default {
     removeTodo(todo, index) {
       this.$emit('removeTodo', todo, index);
     },
+    
+    async getAddress(lat, long){
+      var {data}=await axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="
+      +lat+","+long+"&key=AIzaSyAdDexbtiL5QU86op-M-v9mTMJ3ePaGRow");
+      
+      if (data.error_message){
+        console.log(data.error_message)
+      }else{this.geoloca=data.results[0].formatted_address;}
+    },
+
     toggleTodo(todo, index){
-      this.$emit('toggleTodo', todo, index);
+      navigator.geolocation.getCurrentPosition(location => {this.geoloca=this.getAddress(location.coords.latitude,location.coords.longitude)});
+      //navigator.geolocation.getCurrentPosition(location=>{this.geoloca=location.coords.longitude+" "+location.coords.latitude;})
+      this.$emit('toggleTodo', todo, index, this.geoloca);
     },
     edit(todo, index){
       this.showModify=!this.showModify;
@@ -171,7 +206,6 @@ export default {
     },
     editItem(e){
       this.edititem=e.target.value;
-      this.todoItem=this.edititem;
     },
     editAmount(e){
       this.editamount=e.target.value;
