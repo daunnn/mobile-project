@@ -1,9 +1,58 @@
 <template> 
   <div id="app">
-    
-    <TodoHeader></TodoHeader>
+    <!--로그인/회원가입 버튼 클릭-->
 
-    <p v-if="showdday"> {{newwork}} 
+    <v-app-bar app color="primary" dark>
+      <div class="d-flex align-center">
+        <v-img
+          alt="Vuetify Logo"
+          class="shrink mr-2"
+          contain
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          transition="scale-transition"
+          width="40"
+        />
+      </div>
+
+      <v-spacer></v-spacer>
+      <v-btn v-if="!name" outlined @click="addUser"> Signup </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn v-if="!name" outlined @click="login"> Login </v-btn>
+
+      <v-btn v-if="name" outlined @click="logout"> Logout </v-btn>
+    </v-app-bar>
+
+    <!--로그인/회원가입 직접 입력-->
+    <v-spacer></v-spacer>
+
+
+    <template v-if="!name">
+    <v-form 
+        ><v-container style="position: fixed; top:100px;"
+          ><v-row>
+            <v-col cols="6" sm="3">
+              <v-text-field v-model="email" label="email"></v-text-field>
+            </v-col>
+            <v-col cols="6" sm="3">
+              <v-text-field
+                v-model="password"
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show1 ? 'text' : 'password'"
+                label="Password"
+                hint="At least 6 characters"
+                counter
+                @click:append="show1 = !show1"
+              ></v-text-field>
+            </v-col> </v-row></v-container
+      ></v-form>
+    </template>
+    
+    <TodoHeader style="position: fixed; content-align: center; top:100px;"></TodoHeader>
+
+    <template v-if="name">
+        
+
+    <p v-if="showdday" style="position: fixed; top:100px;"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
     <!-------------------Dday 기한 알림--------------------------->
@@ -35,13 +84,12 @@
       </v-alert>
     </div>  
     <!--------------------------------------------------------------->
-  
-
-
 
     <!------------chart------------------>
     <h1></h1>
-    <v-card style="position: fixed; margin-left: 5%; content-align: center; top:120px; width: 90%; height: 140px;">
+    <h1></h1>
+
+    <v-card style="position: fixed; margin-left: 5%; content-align: center; top:200px; width: 90%; height: 140px;">
     <div class = "bar">
        <!-- vue-chartkick 이용-->
       <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#9f86db']]">
@@ -52,8 +100,7 @@
     </v-card>
     <h1></h1>
     <!----------------------------------->
-
-
+  </template>
 
   <v-bottom-navigation color="teal" grow style="position: fixed; bottom: 0; width: 100%;">
     <v-btn @click="ddayModal=true">
@@ -102,7 +149,7 @@
     </span>
   </modal>
   </div>
- 
+
 
 </template>
 
@@ -110,6 +157,12 @@
 import TodoHeader from './TodoHeader.vue'
 import dayjs from 'dayjs'
 import Modal from './common/AlertModal.vue'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged  
+} from "firebase/auth";
 
 
 export default {
@@ -156,7 +209,13 @@ export default {
 
       ddayModal: false,
       calLimit: false,
-      calorie_limit: ''
+      calorie_limit: '',
+
+      name:'',
+      password:'',
+      email:'',
+      auth:getAuth(),
+      show1:false
 
     }
   },
@@ -175,7 +234,7 @@ export default {
       const newdday_str = this.newdday.split('-').map(str => Number(str)); // 계산 format으로 변경
       this.deadline = new Date(newdday_str[0], newdday_str[1], newdday_str[2]).getTime(); // 초로 변경
       
-          //d-day 계산
+      //d-day 계산
       const elapsedMSec = this.deadline - this.today;
       this.elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
       this.showdday = true;
@@ -255,11 +314,6 @@ export default {
         'calorie': parseInt(this.calorie)
       }
       
-      
-
-
-
-
       // 로컬 스토리지 저장
       localStorage.setItem('todo 퍼센트', parseFloat(this.todo_per2) );
       localStorage.setItem('calorie', parseInt(this.calorie) );
@@ -384,7 +438,39 @@ export default {
     },
     clickExer(){
       this.click_exer = !this.click_exer;
-    }
+    },
+        addUser() {
+      createUserWithEmailAndPassword(this.auth, this.email, this.password)
+        .then((userCredential) => {
+          // Signed in
+          var user = userCredential.user;
+          console.log(user);
+          // ...
+        })
+        .catch((error) => {
+          console.log(error);
+          // var errorCode = error.code;
+          // var errorMessage = error.message;
+          // ..
+        });
+    },
+    login() {
+      signInWithEmailAndPassword(this.auth, this.email, this.password)
+        .then((userCredential) => {
+          // Signed in
+          console.log(userCredential.user);
+          this.name = userCredential.user.email;
+          // ...
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  },
+  logout(){
+    this.name='';
+  }
+
+
   },
   
   created() {
@@ -416,21 +502,28 @@ export default {
     }
     // 자동으로 차트 업데이트
     this.chartData = {
-        'percent': parseFloat(this.todo_per2)
-        
+        'percent': parseFloat(this.todo_per2)    
       }
     this.chartData1 = {
         'calorie': parseInt(this.calorie)
-        
       }
     /*console.log(this.todoItems)*/
-    
    }
+   // 로그인이 되면 나오는 상태
+   onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        this.name = user.email;
+        // ...
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
   },
   components: {
     'TodoHeader': TodoHeader,
-
-
      Modal : Modal
   }
 }
