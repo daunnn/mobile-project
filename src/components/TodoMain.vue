@@ -1,34 +1,22 @@
 <template> 
   <div id="app">
+    <TodoHeader></TodoHeader>
+
     <!--로그인/회원가입 버튼 클릭-->
+<!--    <v-app-bar app color="primary" dark> -->
+      <v-btn v-if="!name" dark @click="login" style="position:fixed; right:0px; margin:5px;" > Login </v-btn>
 
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-      </div>
+      <v-btn v-if="name" dark @click="logout" style="position:fixed; right:0px; margin:5px; "> Logout </v-btn>
+      
+      
 
-      <v-spacer></v-spacer>
-      <v-btn v-if="!name" outlined @click="addUser"> Signup </v-btn>
-      <v-spacer></v-spacer>
-      <v-btn v-if="!name" outlined @click="login"> Login </v-btn>
-
-      <v-btn v-if="name" outlined @click="logout"> Logout </v-btn>
-    </v-app-bar>
+<!--    </v-app-bar> -->
 
     <!--로그인/회원가입 직접 입력-->
     <v-spacer></v-spacer>
-
-
     <template v-if="!name">
     <v-form 
-        ><v-container style="position: fixed; top:100px;"
+        ><v-container style="position: fixed; top:50px;"
           ><v-row>
             <v-col cols="6" sm="3">
               <v-text-field v-model="email" label="email"></v-text-field>
@@ -45,18 +33,22 @@
               ></v-text-field>
             </v-col> </v-row></v-container
       ></v-form>
+
+      <v-text v-if="!name" outlined @click="addUser" 
+      style="position: fixed; top:120px; left: 50%; transform: translateX(-50%);"> 회원가입 </v-text>
+      <v-spacer></v-spacer>
+
     </template>
     
-    <TodoHeader style="position: fixed; content-align: center; top:100px;"></TodoHeader>
+    
 
+<!--로그인 후 보이는 화면-->
     <template v-if="name">
-        
-
-    <p v-if="showdday" style="position: fixed; top:100px;"> {{newwork}} 
+    <p v-if="showdday" style="position: fixed; top:75px;"> {{newwork}} 
     D-{{elapsedDay}} </p>
 
     <!-------------------Dday 기한 알림--------------------------->
-    <div style="position:relative; top: 40px; z-index: 4">
+    <div style="position:relative; top: 50px; z-index: 4">
       <v-alert prominent v-if="alert==true && elapsedDay<=5 && elapsedDay>0 && elapsedDay!=''" color="rgb(191,193,255)">
         <v-row > 
           <v-col>
@@ -89,7 +81,7 @@
     <h1></h1>
     <h1></h1>
 
-    <v-card style="position: fixed; margin-left: 5%; content-align: center; top:200px; width: 90%; height: 140px;">
+    <v-card style="position: fixed; margin-left: 5%; content-align: center; top:140px; width: 90%; height: 140px;">
     <div class = "bar">
        <!-- vue-chartkick 이용-->
       <bar-chart :data="chartData" points=false height="75%" min="0" max="1" :colors="[['#9f86db']]">
@@ -100,8 +92,7 @@
     </v-card>
     <h1></h1>
     <!----------------------------------->
-  </template>
-
+  
   <v-bottom-navigation color="teal" grow style="position: fixed; bottom: 0; width: 100%;">
     <v-btn @click="ddayModal=true">
       <span>D-day</span>
@@ -116,6 +107,8 @@
       <v-icon>mdi-cancel</v-icon>
     </v-btn>
   </v-bottom-navigation>
+  </template>
+
 
   <modal v-if="ddayModal" @close="ddayModal=false">
     <span slot="footer">

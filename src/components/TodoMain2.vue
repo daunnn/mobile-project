@@ -206,7 +206,8 @@ export default {
    toggleTodo(todo, index, geoloca_info){
       // 완료 기능
       this.todoItems[index].completed = !this.todoItems[index].completed;
-      if (this.todoItems[index].completed==true){this.todoItems[index].geoloca = geoloca_info;}
+      if (this.todoItems[index].completed==true && this.todoItems[index].diet_exer=='식단')
+        {this.todoItems[index].geoloca = geoloca_info;}
       else{this.todoItems[index].geoloca='';}
       
       localStorage.removeItem(todo.item);

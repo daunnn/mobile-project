@@ -1,7 +1,7 @@
 <template>
   <header>
     <v-tool-bar @click="convert_main" color=rgb(236,242,255)>
-      <div style="float: left; margin: 15px; position: fixed; top:100px;"> {{today_info}} </div>
+      <div style="float: left; margin: 15px; position: fixed; "> {{today_info}} </div>
       <div style ="font-weight:bold; content-align: center; font-size: 25px; top:5px; position: fixed; left: 50%; transform: translateX(-50%);"> 다이어트 ToDo </div>
     </v-tool-bar>
 
