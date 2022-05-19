@@ -35,7 +35,7 @@
       ></v-form>
 
       <v-text v-if="!name" outlined @click="addUser" 
-      style="position: fixed; top:120px; left: 50%; transform: translateX(-50%);"> 회원가입 </v-text>
+      style="position: fixed; top:130px; left: 50%; transform: translateX(-50%);"> 회원가입 </v-text>
       <v-spacer></v-spacer>
 
     </template>
