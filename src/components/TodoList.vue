@@ -1,19 +1,23 @@
 <template>
   <section>
-    <transition-group name="list" tag="ul">
-
+    <transition-group name="list" tag="ul" style="position: fixed; top: 100px">
       <li v-for="(todo, index) in propsdata" v-bind:key="todo.item" class="shadow">
-        <i class="checkBtn fas fa-check" @click="toggleTodo(todo, index)" v-bind:class="{checkBtnCompleted: todo.completed}" aria-hidden="true"></i>
-        <span @click="toggleTodo(todo, index)" v-bind:class="{textCompleted: todo.completed}"> 
+        
+        <i class="checkBtn fas fa-check" @click="toggleTodo(todo, index)" v-bind:class="{checkBtnCompleted: todo.completed}" aria-hidden="true"
+         style="display: inline-block"></i>
+        <span @click="toggleTodo(todo, index)" v-bind:class="{textCompleted: todo.completed}"
+         style="display: inline-block"> 
           {{ todo.category }}      {{todo.item}}
         </span>
 
-
-        <!--=================수정======================-->
-
-        <span class="updateBtn" type="button" @click="edit(todo, index)">
+        <span class="updateBtn" type="button" @click="edit(todo, index)" style="display: inline-block">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i> 
         </span>
+
+        <span class="removeBtn" type="button" @click="removeTodo(todo, index)" style="display: inline-block">
+          <i class="far fa-trash-alt" aria-hidden="true"></i>
+        </span>
+        
 
         <modal v-if="showModify">
           <span slot ="header">
@@ -84,9 +88,7 @@
         </modal>
 
         <!--삭제-->
-        <span class="removeBtn" type="button" @click="removeTodo(todo, index)">
-          <i class="far fa-trash-alt" aria-hidden="true"></i>
-        </span>
+        
       </li>
     </transition-group>
   </section>
@@ -95,6 +97,7 @@
 
 <script>
 import Modal from './common/AlertModal.vue'
+import axios from 'axios';
 export default {
   data(){
     return{
@@ -124,7 +127,9 @@ export default {
       //attribute 버튼 클릭 여부
       clickcarbo: false,
       clickprotein: false,
-      clickfat: false
+      clickfat: false,
+
+      geoloca: ''
     }
   },
   props: ['propsdata'],
@@ -132,8 +137,19 @@ export default {
     removeTodo(todo, index) {
       this.$emit('removeTodo', todo, index);
     },
+    
+    async getAddress(lat, long){
+      var {data}=await axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="
+      +lat+","+long+"&key=AIzaSyAdDexbtiL5QU86op-M-v9mTMJ3ePaGRow");
+      
+      if (data.error_message){
+        console.log(data.error_message)
+      }else{this.geoloca=data.results[0].formatted_address;}
+    },
     toggleTodo(todo, index){
-      this.$emit('toggleTodo', todo, index);
+      navigator.geolocation.getCurrentPosition(location => {this.geoloca=this.getAddress(location.coords.latitude,location.coords.longitude)});
+      //navigator.geolocation.getCurrentPosition(location=>{this.geoloca=location.coords.longitude+" "+location.coords.latitude;})
+      this.$emit('toggleTodo', todo, index, this.geoloca);
     },
     edit(todo, index){
       this.showModify=!this.showModify;

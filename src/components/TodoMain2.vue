@@ -8,7 +8,7 @@
       :collapse-on-scroll="collapseOnScroll"
       absolute style="right: 0px; "
       dark
-      height="50px"
+      height="45px"
       scroll-target="#scrolling-techniques-6"
     >
       <v-toolbar-title>
@@ -31,7 +31,7 @@
 
 
       <div data-app>
-  <v-layout class="boxOuter" align-end>
+  <v-layout class="boxOuter" align-end style="position: fixed; top: 10px;">
     <!-- <v-row align="end"> -->
        <!-- <v-col
         class="d-inline"
@@ -45,6 +45,7 @@
           label="식단"
           dense
           solo
+          
         ></v-select>
 
         <v-select
@@ -189,9 +190,9 @@ export default {
 			this.todoItems.push(obj);
       this.filter_search_push=this.todoItems;
 		},
-    addTodoDiet(todoItem, diet_exer, cate, attri, amount, calorie, geoloca){
+    addTodoDiet(todoItem, diet_exer, cate, attri, amount, calorie){
       var obj={completed: false, item: todoItem, diet_exer:diet_exer, category:cate, attribute: attri, amount: amount,
-               calorie: calorie, geoloca: geoloca};
+               calorie: calorie, geoloca: ''};
       localStorage.setItem(todoItem, JSON.stringify(obj));
 			this.todoItems.push(obj);
       this.filter_search_push=this.todoItems;
@@ -202,9 +203,12 @@ export default {
       this.todoItems.splice(index, 1);
       this.filter_search_push=this.todoItems;
     },
-   toggleTodo(todo, index){
+   toggleTodo(todo, index, geoloca_info){
       // 완료 기능
       this.todoItems[index].completed = !this.todoItems[index].completed;
+      if (this.todoItems[index].completed==true){this.todoItems[index].geoloca = geoloca_info;}
+      else{this.todoItems[index].geoloca='';}
+      
       localStorage.removeItem(todo.item);
       localStorage.setItem(todo.item, JSON.stringify(todo));
       // 진행상황 퍼센트 및 칼로리 업데이트
@@ -237,6 +241,7 @@ export default {
       if (this.calorie>this.calorie_limit && this.todoItems[index].diet_exer=='식단'){        
         navigator.vibrate([2000,500,2000,500]);
         console.log(this.calorie);
+        console.log(navigator.vibrate([2000,500,2000,500]));
       }
 
       // 로컬 스토리지 저장

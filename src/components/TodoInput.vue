@@ -56,6 +56,7 @@
 
 
         <v-spacer></v-spacer>
+        
         <v-btn @click=startCam> Cam </v-btn>
         <div id="cam"></div>
 
@@ -110,7 +111,7 @@
     
 <v-layout class="plus_location">
     <v-btn 
-      class="mx-2" fab dark color="indigo" @click="DietExercise">
+      class="mx-2" dark color="indigo" @click="DietExercise">
       <v-icon dark>
         mdi-plus
       </v-icon>
@@ -174,8 +175,8 @@ export default {
       if (this.newTodoItem !== "") {
         var value = this.newTodoItem && this.newTodoItem.trim();
         if (this.diet_exer=='식단'){
-          navigator.geolocation.getCurrentPosition(location=>{this.geoloca=location.coords.longitude+"&"+location.coords.latitude;})
-          this.$emit('addTodoDiet', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie, this.geoloca);
+          
+          this.$emit('addTodoDiet', value, this.diet_exer , this.category, this.attribute, this.newAmount, this.newCalorie);
           this.clearInput();
         }
         else{
@@ -368,11 +369,11 @@ span {
   margin-right:10px;
 }
 .plus_location{
-  /* margin:auto; */
-  display: block;
-  /* left:75%; */
-  position:relative;
-  top: 80px;
+  
+  display: block; 
+  position:fixed;
+  top: 53px;
+  left: 10px;  
   align-content: center;
 
 

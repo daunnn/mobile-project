@@ -11,7 +11,7 @@
       <v-alert prominent v-if="alert==true && elapsedDay<=5 && elapsedDay>0 && elapsedDay!=''" color="rgb(191,193,255)">
         <v-row > 
           <v-col>
-            {{newwork}}의 마감 기한까지 {{elapsedDay}}일 남았습니다.
+            {{newwork}}까지 {{elapsedDay}}일 남았습니다.
           </v-col>
           <v-col class="shrink">
            <v-btn @click="alert=false" dark>
@@ -24,7 +24,7 @@
       <v-alert prominent v-if="alert==true && elapsedDay==0 && elapsedDay!=''" width=50% dark>
         <v-row align="center"> 
           <v-col>
-            오늘은 {{newwork}}의 마감 기한일입니다.
+            오늘은 {{newwork}}의 마감기한입니다.
           </v-col>
           <v-col class="shrink">
            <v-btn @click="alert=false">
