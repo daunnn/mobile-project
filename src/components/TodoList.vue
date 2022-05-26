@@ -2,15 +2,17 @@
   <section>
     <v-card class="mx-auto" style="top:100px; width:90%; margin-left:5%" v-if="propsdata.length>0">
       <v-list two-line>
-        <v-list-item-group v-model="completed" active-class="dark" multiple>
+        <v-list-item-group  active-class="dark" multiple>
           <template v-for="(todo, index) in propsdata">
-            <v-list-item :key="todo.item">
+            
+            <v-list-item :key="todo.item" v-if="todo.item">
+              
+              
               <template>
-
                 <!--완료 체크 btn-->
                 <v-list-item-action>
                   <v-icon v-if="todo.completed==false" color="grey lighten-1" @click="toggleTodo(todo, index)">mdi-check</v-icon>
-                  <v-icon v-else color="yellow darken-3" @click="toggleTodo(todo, index)">mdi-check</v-icon>
+                  <v-icon v-else color="#9F3636" @click="toggleTodo(todo, index)">mdi-check</v-icon>
                 </v-list-item-action>
 
                 <!--내용-->
@@ -26,14 +28,15 @@
 
                 
                 <!--수정 btn-->
-                <v-icon @click="edit(todo, index)" color="grey lighten-1" style="margin-right:10px">mdi-pencil</v-icon>
+                <v-icon @click="edit(todo, index)"  style="margin-right:10px">mdi-pencil</v-icon>
                 
                 <!--삭제 btn-->
-                <v-icon @click="removeTodo(todo, index)" color="grey lighten-1">mdi-delete</v-icon>
+                <v-icon @click="removeTodo(todo, index)" >mdi-delete</v-icon>
                 
               </template>
             </v-list-item>        
             <v-divider v-if="index<propsdata.length -1" :key="index"></v-divider>
+          
           </template>
         </v-list-item-group>
       </v-list>
@@ -169,8 +172,17 @@ export default {
       navigator.geolocation.getCurrentPosition(location => {this.geoloca=this.getAddress(location.coords.latitude,location.coords.longitude)});
       //navigator.geolocation.getCurrentPosition(location=>{this.geoloca=location.coords.longitude+" "+location.coords.latitude;})
       this.$emit('toggleTodo', todo, index, this.geoloca);
+      var calorie_limit=JSON.parse(localStorage.getItem(localStorage.key('calorieLimit')));
+
+       if (JSON.parse(todo.calorie)>calorie_limit && todo.diet_exer=='식단'){        
+        navigator.vibrate(2000);
+        console.log(todo.calorie);
+        console.log(navigator.vibrate(2000));
+      }
+
     },
     edit(todo, index){
+      
       this.showModify=!this.showModify;
       this.modifyTodo=todo;
       this.modifyIndex=index;

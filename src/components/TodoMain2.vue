@@ -127,7 +127,7 @@ export default {
       chartData1:{
         'calorie': 0
       },
-      calorie_limit : 0,
+      
 
       collapseOnScroll: false,
 
@@ -236,13 +236,6 @@ export default {
       }
       this.chartData1 = {
         'calorie': parseInt(this.calorie)
-      }
-      
-      //calorie limit 넘으면 진동
-      if (this.calorie>this.calorie_limit && this.todoItems[index].diet_exer=='식단'){        
-        navigator.vibrate([2000,500,2000,500]);
-        console.log(this.calorie);
-        console.log(navigator.vibrate([2000,500,2000,500]));
       }
 
       // 로컬 스토리지 저장
@@ -408,8 +401,6 @@ export default {
             var temp =JSON.parse(localStorage.getItem(localStorage.key(i)));
             this.todoItems.push(temp);
             this.filter_search_push.push(temp);       
-        }else if(localStorage.key(i) == 'calorieLimit'){
-          this.calorie_limit=JSON.parse(localStorage.getItem(localStorage.key(i)));
         }
         else{
         if(localStorage.key(i).length>0){

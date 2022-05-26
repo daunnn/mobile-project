@@ -25,7 +25,7 @@
     <modal v-if="showDiet" @close="showDiet = false">
     
       <span slot="header"> 
-        <input type="text" placeholder="type" :value="now_message" v-on:change="setItem"> <!-- v-model="now_message" -->
+        <input type="text" :value="now_message" placeholder="Item을 입력하세요." v-on:change="setItem"> <!-- v-model="now_message" -->
 
         <v-btn class="buttons" v-if="clickbreak" color="rgb(115, 115, 115)" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
         <v-btn class="buttons" v-if="!clickbreak" @click="[setCategory('아침'), clickCategory('아침')]">아침</v-btn>
@@ -50,23 +50,22 @@
         <input type="text" placeholder="양(g, 개수)" v-on:change="setAmount" class="texts">     
         <input type="text" placeholder="칼로리" v-on:change="setCalorie" :value="newCalorie" class="texts">
 
+
         <v-btn class="buttons" @click="calorie_db()" >칼로리 계산</v-btn>
-    
-        <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
-          <i class="addBtn fas fa-check" aria-hidden="true"></i>
-        </v-btn> 
-
-
-        <v-spacer></v-spacer>
         
         <v-btn @click=startCam> Cam </v-btn>
         <div id="cam"></div>
 
         <v-btn @click=saveImage> 촬영 </v-btn>
 
-        <v-btn class="buttons" @click="showDiet = false" color="rgb(115,115,115)">
+        <v-btn class="buttons" @click="showDiet = false" color="rgb(115,115,115)" style="margin-left: 10px">
         <i class="addBtn fas fa-times" aria-hidden="true"></i>
         </v-btn>
+        <v-spacer></v-spacer>
+
+        <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
+          <i class="addBtn fas fa-check" aria-hidden="true"></i>
+        </v-btn> 
 
       </span>
     </modal>
@@ -93,13 +92,15 @@
         <input type="text" placeholder="시간" v-on:change="setCalorie">
   
   
+        
+        <v-btn class="buttons" @click="showExercise = false" color="rgb(115,115,115)">
+          <i class="addBtn fas fa-times" aria-hidden="true"></i>
+        </v-btn>
+
         <v-btn class="buttons" v-if="categorySelect" v-on:click="addTodo" color="rgb(107,97,255)">
           <i class="addBtn fas fa-check" aria-hidden="true"></i>
         </v-btn> 
 
-        <v-btn class="buttons" @click="showExercise = false" color="rgb(115,115,115)">
-          <i class="addBtn fas fa-times" aria-hidden="true"></i>
-        </v-btn>
       </span>
     </modal>  
 
@@ -143,7 +144,7 @@ export default {
 
       newTodoItem: '',
       newAmount:'',
-      newCalorie:0,
+      newCalorie:'',
       diet_exer:'',
       category: '',
       attribute: '',
@@ -195,6 +196,8 @@ export default {
       }
     },
     setItem(e){
+      if (this.showDiet==true)
+        this.now_message=e.target.value;
       return this.newTodoItem=e.target.value;
     },
     setAmount(e){
@@ -202,7 +205,9 @@ export default {
       return this.newAmount=e.target.value;
     },
     setCalorie(e){
-      return this.newCalorie=e.target.value;
+      if (this.showDiet==true)
+        this.newCalorie=e.target.value;
+      //return this.newCalorie=e.target.value;
     },
     setCategory(cate){      
       return this.category=cate;
@@ -231,7 +236,7 @@ export default {
     clearInput() {
       this.newTodoItem = '';
       this.newAmount=' ';
-      this.newCalorie=0;
+      this.newCalorie='';
       this.attribute=' ';
       this.category=' ';
       },
@@ -253,8 +258,9 @@ export default {
       this.showDiet=!this.showDiet;
       this.popup = !this.popup;     
       this.now_message=""; 
-      this.newCalorie=0;
+      //this.newCalorie=0;
     },
+    
     exer(){
       this.showExercise=!this.showExercise;
       this.popup = !this.popup;      
@@ -263,6 +269,7 @@ export default {
       this.now_message = this.message;
       this.newTodoItem = this.now_message;
       //calorie_db();
+      
     },
     
     async loop() {
@@ -302,7 +309,7 @@ export default {
         console.log(this.now_message);
         console.log('---');
 
-        if (calorieList[i].name.includes(this.now_message)){
+        if (calorieList[i].name.includes(this.now_message)&&this.newAmount!=0){
             this.newCalorie = (calorieList[i].cal) * (this.newAmount);
             console.log(this.newCalorie);
             console.log('!!!');

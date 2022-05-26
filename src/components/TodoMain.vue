@@ -62,13 +62,13 @@
         </v-row>
       </v-alert>
 
-      <v-alert prominent v-if="alert==true && elapsedDay==0 && elapsedDay!=''" width=50% dark>
-        <v-row align="center"> 
+      <v-alert prominent v-if="alert==true && elapsedDay==0 && elapsedDay!=''" color="rgb(191,193,255)" >
+        <v-row> 
           <v-col>
             오늘은 {{newwork}}의 마감기한입니다.
           </v-col>
           <v-col class="shrink">
-           <v-btn @click="alert=false">
+           <v-btn @click="alert=false" dark>
               <i class="addBtn fas fa-times" aria-hidden="true"></i>
             </v-btn>
           </v-col>
@@ -202,7 +202,7 @@ export default {
 
       ddayModal: false,
       calLimit: false,
-      calorie_limit: '',
+      //calorie_limit: '',
 
       name:'',
       password:'',
@@ -224,6 +224,7 @@ export default {
     },
     setdday(e){
       this.newdday = e.target.value; // 입력 받은 날짜를 newdday에 할당
+      
       const newdday_str = this.newdday.split('-').map(str => Number(str)); // 계산 format으로 변경
       this.deadline = new Date(newdday_str[0], newdday_str[1], newdday_str[2]).getTime(); // 초로 변경
       
@@ -246,8 +247,8 @@ export default {
     },
     //calorie limit 생성하는 method
     setcalLimit(e){
-      this.calorie_limit=e.target.value;
-      localStorage.setItem('calorieLimit',JSON.stringify(this.calorie_limit));
+      var calorie_limit=e.target.value;
+      localStorage.setItem('calorieLimit',JSON.stringify(calorie_limit));
     },
     
     clearAll() {
@@ -482,6 +483,8 @@ export default {
             var temp =JSON.parse(localStorage.getItem(localStorage.key(i)));
             this.todoItems.push(temp);
             this.filter_search_push.push(temp);       
+        }else if(localStorage.key(i) == 'calorieLimit'){
+          this.calorie_limit=JSON.parse(localStorage.getItem(localStorage.key(i)));
         }else{
         if(localStorage.key(i).length>0){
           this.showdday = true;
