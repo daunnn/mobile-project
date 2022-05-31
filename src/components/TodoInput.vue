@@ -310,7 +310,7 @@ export default {
         console.log('---');
 
         if (calorieList[i].name.includes(this.now_message)&&this.newAmount!=0){
-            this.newCalorie = (calorieList[i].cal) * (this.newAmount);
+            this.newCalorie = (calorieList[i].cal) * (this.newAmount) / 100;
             console.log(this.newCalorie);
             console.log('!!!');
         }

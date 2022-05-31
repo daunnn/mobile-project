@@ -208,7 +208,9 @@ export default {
       password:'',
       email:'',
       auth:getAuth(),
-      show1:false
+      show1:false,
+
+      db_todo:[]
 
     }
   },
